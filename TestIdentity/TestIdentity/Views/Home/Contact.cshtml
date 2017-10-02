@@ -1,0 +1,69 @@
+﻿@{
+  
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+
+
+
+
+<div>
+    <table id="myTable">
+        <thead>
+            <tr>
+                <th> Name</th>
+                <th>LastName</th>
+                <th>Email</th>
+                <th>Age</th>
+              
+               
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@* Load datatable css *@
+
+
+@section scripts {
+
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var a = $('#myTable').DataTable({
+                dataSrc : "",
+                "ajax": {
+                    "url": "/home/GetAllUser",
+                    "type": "GET", 
+                    "datatype": "json"
+                },
+                "columns": [
+                        { "Data": "Name", "autoWidth": true },
+                        { "Data": "LastName", "autoWidth": true },
+                        { "Data": "Email", "autoWidth": true },
+                        { "Data": "Age", "autoWidth": true },
+                       
+                        //{ "data": "City", "autoWidth": true },
+                        //{ "data": "PostalCode", "autoWidth": true }
+                ]
+            });
+        });
+
+    </script>
+    
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
