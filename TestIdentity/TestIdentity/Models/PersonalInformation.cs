@@ -16,7 +16,7 @@ namespace TestIdentity.Models
         public DateTime? Age { get; set; }
 
         public DateTime? RegistrationDate { get; set; }
-        public DateTime? StudynDate { get; set; }
+        public DateTime? StudyDate { get; set; }
 
         public virtual ApplicationUser ApplicationUser { get; set; }
     }

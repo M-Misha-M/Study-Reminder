@@ -4,18 +4,12 @@
 
 myApp.controller("entityController", ["$scope", "dataService","localStorageService",
     function ($scope, dataService, localStorageService) {
-      
-
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.maxSize = 5;
         $scope.recordsPerPage = 5;
         $scope.NumberOfPageButtons = 5;
         $scope.search = "";
-        $scope.pagingInfo = {         
-            sortBy: 'Name',          
-          search: ''        
-        };
 
         $scope.getData = function () {
             dataService.getStudents($scope.currentPage, $scope.recordsPerPage , $scope.search).then(function (studentInfo) {
@@ -30,8 +24,6 @@ myApp.controller("entityController", ["$scope", "dataService","localStorageServi
         }
        
 
-      
-
         $scope.pageChanged = function () {
             $scope.getData();
         };
@@ -45,9 +37,7 @@ myApp.controller("entityController", ["$scope", "dataService","localStorageServi
             $scope.getData();
         }
         
-        $scope.getData();
-        
-
+        $scope.getData();        
     }]);
 
 

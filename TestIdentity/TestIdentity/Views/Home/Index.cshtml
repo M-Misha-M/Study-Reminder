@@ -1,6 +1,6 @@
 ﻿
 
-@model  List<TestIdentity.Models.PersonalInfoModel>
+@model  List<TestIdentity.Models.PersonalInfoViewModel>
 
 @{
     ViewBag.Title = "Home Page";
@@ -40,7 +40,7 @@
                                 <thead>
                                     <tr role="row">
 
-                                        <th ng-click="sort('Name')" tabindex="0" aria-controls="sample_1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Username : activate to sort column descending" style="width: 254px;">
+                                        <th ng-click="sort('Name')" class="sorting" tabindex="0" aria-controls="sample_1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Username : activate to sort column descending" style="width: 254px;">
                                             Name
                                         </th>
 
@@ -51,11 +51,11 @@
                                         </th>
 
 
-                                        <th ng-click="sort('Age')" style="width:199px">
+                                        <th ng-click="sort('Age')" class="sorting" style="width:199px">
                                             Birthday
                                         </th>
 
-                                        <th style="width:203px">
+                                        <th style="width:203px" class="sorting" ng-click="sort('RegistrationDate')">
                                             Register date
                                         </th>
 
@@ -105,14 +105,7 @@
             </div>
         </div>
     </div>
-
-
-   
-  
-
       
-          
-        
     </div>
     @section scripts{
        

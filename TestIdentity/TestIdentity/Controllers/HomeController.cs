@@ -1,14 +1,11 @@
-﻿using Hangfire;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using System.Linq.Dynamic;
+using Hangfire;
 using TestIdentity.DAL;
 using TestIdentity.Models;
-using System.Linq.Dynamic;
 
 namespace TestIdentity.Controllers
 {
@@ -16,26 +13,24 @@ namespace TestIdentity.Controllers
     public class HomeController : Controller
     {
         IRepository<PersonalInformation> personRepository;
-            
+
         public HomeController()
         {
             personRepository = new StudentsRepository<PersonalInformation>();
         }
 
-      
-         [Authorize(Roles = "admin")]
+
+        [Authorize(Roles = "admin")]
         public ActionResult Index()
         {
-                return View();
+            return View();
         }
 
-
         [Authorize(Roles = "user")]
-        public ActionResult About()
+        public ActionResult PersonalCabinet()
         {
             var id = User.Identity.GetUserId();
             var email = User.Identity.GetUserName();
-
             var person = personRepository.Get().FirstOrDefault(x => x.UserId == id);
 
             return View(person);
@@ -44,22 +39,7 @@ namespace TestIdentity.Controllers
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
-
             return View();
-        }
-
-        public JsonResult GetAllUser()
-        {
-
-            // Here "MyDatabaseEntities " is dbContext, which is created at time of model creation.
-
-            using (ApplicationDbContext db = new ApplicationDbContext())
-            {
-                db.Configuration.LazyLoadingEnabled = false;
-                var Data = db.PersonalInformation.ToList();
-                return new JsonResult { Data = Data, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
-            }
-
         }
 
 
@@ -68,7 +48,7 @@ namespace TestIdentity.Controllers
             EmailService emailService = new EmailService();
             IdentityMessage identityMessage = new IdentityMessage();
             identityMessage.Subject = "Start study";
-            identityMessage.Body = "Your study start will begin through " + day + "days";
+            identityMessage.Body = $"Your study start will begin through  {day} days";
             identityMessage.Destination = email;
             emailService.SendAsync(identityMessage);
         }
@@ -76,40 +56,40 @@ namespace TestIdentity.Controllers
         [HttpPost]
         public ActionResult AddDateToDatabase(StudyDateViewModel model)
         {
-            // DateTime? RegisterDate =  (DateTime)model.RegistrationDate;
-            DateTime StudyDate = (DateTime)model.StudynDate;
-
+            DateTime? StudyDate = (DateTime)model.StudyDate;
+            const int monthDays = 31;
+            const int weekDays = 7;
+            const int oneDay = 12;
 
             if (ModelState.IsValid)
             {
                 ApplicationDbContext db = new ApplicationDbContext();
-                var userId = User.Identity.GetUserId();
+                string userId = User.Identity.GetUserId();
                 var user = db.Users.FirstOrDefault(u => u.Id == userId);
+                DateTime startDate = DateTime.Now;
 
                 var changeStudyDate = db.PersonalInformation
-         .Where(c => c.UserId == userId)
-         .FirstOrDefault();
-                changeStudyDate.StudynDate = model.StudynDate;
+                                        .Where(c => c.UserId == userId)
+                                        .FirstOrDefault();
+
+                changeStudyDate.StudyDate = model.StudyDate;
                 db.SaveChanges();
+                int difference = (int)(StudyDate - startDate).Value.TotalDays;
 
-
-                BackgroundJob.Schedule(
-           () => SendEmail(user.Email, 31),
-           StudyDate.AddDays(-31));
-
-                BackgroundJob.Schedule(
-       () => SendEmail(user.Email, 7),
-       StudyDate.AddDays(-7));
-
-                BackgroundJob.Schedule(
-       () => SendEmail(user.Email, 31),
-       StudyDate.AddHours(-12));
-               
-            }
-            //else
-            // error "Model state is not valid"l;
-            // ViewBag.Error = error;
-            return RedirectToAction("About");
+                if(difference == 30 || difference == 31)
+                {
+                    BackgroundJob.Enqueue(() => SendEmail(user.Email, monthDays));
+                }
+                else if(difference == 7)
+                {
+                    BackgroundJob.Enqueue(() => SendEmail(user.Email, weekDays));
+                }
+                else if(difference == 1)
+                {
+                    BackgroundJob.Enqueue(() => SendEmail(user.Email, oneDay));
+                }              
+            }          
+            return RedirectToAction("PersonalCabinet");
         }
     }
 }

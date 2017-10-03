@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -60,9 +58,9 @@ namespace TestIdentity.Controllers
          
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("About", "Home");
+                return RedirectToAction("PersonalCabinet", "Home");
             }
-            ViewBag.ReturnUrl = returnUrl ?? Url.Action("About", "Home");
+            ViewBag.ReturnUrl = returnUrl ?? Url.Action("PersonalCabinet", "Home");
 
             return View();
         }
@@ -75,8 +73,6 @@ namespace TestIdentity.Controllers
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
           
-
-
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindAsync(model.Email, model.Password);
@@ -92,14 +88,13 @@ namespace TestIdentity.Controllers
                        
                         if (UserManager.IsInRole(user.Id, "user"))
                         {
-                            return RedirectToAction("About", "Home");
+                            return RedirectToAction("PersonalCabinet", "Home");
                         }
-                    }else
+                    }
+                    else
                     {
                       ModelState.AddModelError("", "Email is not confirmed.");
-                    }
-
-                   
+                    }                   
                 }
                 else
                 {
@@ -165,7 +160,7 @@ namespace TestIdentity.Controllers
             }
             else
             {
-                return RedirectToAction("About" , "Home");
+                return RedirectToAction("PersonalCabinet" , "Home");
             }
             
         }
@@ -180,7 +175,7 @@ namespace TestIdentity.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email , PersonalInformation = new PersonalInformation { Name = model.Name , LastName = model.LastName , Age  = model.Age , RegistrationDate = DateTime.Now , StudynDate = model.StudynDate } };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email , PersonalInformation = new PersonalInformation { Name = model.Name , LastName = model.LastName , Age  = model.Age , RegistrationDate = DateTime.Now , StudyDate = model.StudynDate } };
                 var result = await UserManager.CreateAsync(user, model.Password);
               
                 if (result.Succeeded)
@@ -200,10 +195,7 @@ namespace TestIdentity.Controllers
                    
                 }
                 AddErrors(result);
-            }
-            
-
-          
+            }                    
             return View(model);
         }
 
@@ -368,7 +360,7 @@ namespace TestIdentity.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToAction("About" , "Home");
+                    return RedirectToAction("PersonalCabinet" , "Home");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -396,7 +388,6 @@ namespace TestIdentity.Controllers
 
             if (ModelState.IsValid)
             {
-                // Get the information about the user from the external login provider
                 var info = await AuthenticationManager.GetExternalLoginInfoAsync();
                 var firstName = info.ExternalIdentity.Claims.First(c => c.Type == "urn:facebook:first_name").Value;
                 var lastName = info.ExternalIdentity.Claims.First(c => c.Type == "urn:facebook:last_name").Value;
