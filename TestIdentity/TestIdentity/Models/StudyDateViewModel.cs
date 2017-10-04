@@ -7,7 +7,6 @@ namespace TestIdentity.Models
 {
     public class StudyDateViewModel
     {
-        public DateTime? StudyDate { get; set; }
-      
+        public DateTime? StudyDate { get; set; }      
     }
 }

@@ -2,7 +2,7 @@
 
 
 
-myApp.controller("entityController", ["$scope", "dataService","localStorageService",
+myApp.controller("studentController", ["$scope", "dataService","localStorageService",
     function ($scope, dataService, localStorageService) {
         $scope.totalItems = 0;
         $scope.currentPage = 1;
@@ -36,6 +36,11 @@ myApp.controller("entityController", ["$scope", "dataService","localStorageServi
         $scope.searchFor = function () {
             $scope.getData();
         }
+
+        $scope.changePageSize = function () {
+            $scope.currentPage = 1;
+            $scope.getData();
+        };
         
         $scope.getData();        
     }]);

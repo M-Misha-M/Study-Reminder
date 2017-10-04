@@ -55,7 +55,7 @@ namespace TestIdentity.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
-         
+
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("PersonalCabinet", "Home");
@@ -72,20 +72,20 @@ namespace TestIdentity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-          
+
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindAsync(model.Email, model.Password);
-                if (user!= null)
+                if (user != null)
                 {
-                    if(user.EmailConfirmed)
+                    if (user.EmailConfirmed)
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         if (UserManager.IsInRole(user.Id, "admin"))
                         {
                             return RedirectToAction("Index", "Home");
                         }
-                       
+
                         if (UserManager.IsInRole(user.Id, "user"))
                         {
                             return RedirectToAction("PersonalCabinet", "Home");
@@ -93,19 +93,19 @@ namespace TestIdentity.Controllers
                     }
                     else
                     {
-                      ModelState.AddModelError("", "Email is not confirmed.");
-                    }                   
+                        ModelState.AddModelError(string.Empty, "Email is not confirmed.");
+                    }
                 }
                 else
                 {
-                  ModelState.AddModelError("", "Invalid login or password");
+                    ModelState.AddModelError(string.Empty, "Invalid login or password");
                 }
             }
             return View(model);
-            
+
         }
-         
-    
+
+
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
@@ -135,7 +135,7 @@ namespace TestIdentity.Controllers
             // Если пользователь введет неправильные коды за указанное время, его учетная запись 
             // будет заблокирована на заданный период. 
             // Параметры блокирования учетных записей можно настроить в IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -160,9 +160,9 @@ namespace TestIdentity.Controllers
             }
             else
             {
-                return RedirectToAction("PersonalCabinet" , "Home");
+                return RedirectToAction("PersonalCabinet", "Home");
             }
-            
+
         }
 
         //
@@ -170,14 +170,26 @@ namespace TestIdentity.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        
+
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email , PersonalInformation = new PersonalInformation { Name = model.Name , LastName = model.LastName , Age  = model.Age , RegistrationDate = DateTime.Now , StudyDate = model.StudynDate } };
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    PersonalInformation = new PersonalInformation
+                    {
+                        Name = model.Name,
+                        LastName = model.LastName,
+                        Age = model.Age,
+                        RegistrationDate = DateTime.Now,
+                        StudyDate = model.StudynDate
+                    }
+                };
                 var result = await UserManager.CreateAsync(user, model.Password);
-              
+
                 if (result.Succeeded)
                 {
                     var code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -192,10 +204,10 @@ namespace TestIdentity.Controllers
                     // await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
                     return View("DisplayEmail");
-                   
+
                 }
                 AddErrors(result);
-            }                    
+            }
             return View(model);
         }
 
@@ -357,22 +369,30 @@ namespace TestIdentity.Controllers
 
             // Sign in the user with this external login provider if the user already has a login
             var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToAction("PersonalCabinet" , "Home");
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
-                case SignInStatus.Failure:
+                switch (result)
+                {
+                    case SignInStatus.Success:
+                    {
+                        return RedirectToAction("PersonalCabinet", "Home");
+                    }
+                    case SignInStatus.LockedOut:
+                    {
+                        return View("Lockout");
+                    }
+                    case SignInStatus.RequiresVerification:
+                    {
+                        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
+                    }
+                case SignInStatus.Failure: 
                 default:
-                    // If the user does not have an account, then prompt the user to create an account
-                    ViewBag.ReturnUrl = returnUrl;
-                    ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
+                    {
+                        // If the user does not have an account, then prompt the user to create an account
+                        ViewBag.ReturnUrl = returnUrl;
+                        ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
+                        return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
+                    }
+                }
             }
-        }
 
         //
         // POST: /Account/ExternalLoginConfirmation
@@ -381,6 +401,9 @@ namespace TestIdentity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
+            const string first_name = "urn:facebook:first_name";
+            const string last_name = "urn:facebook:last_name";
+            const string birthday_facebook = "urn:facebook:birthday";
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Manage");
@@ -389,28 +412,32 @@ namespace TestIdentity.Controllers
             if (ModelState.IsValid)
             {
                 var info = await AuthenticationManager.GetExternalLoginInfoAsync();
-                var firstName = info.ExternalIdentity.Claims.First(c => c.Type == "urn:facebook:first_name").Value;
-                var lastName = info.ExternalIdentity.Claims.First(c => c.Type == "urn:facebook:last_name").Value;
-                var birthday = info.ExternalIdentity.Claims.First(c => c.Type == "urn:facebook:birthday").Value;
+                var facebookClaims = info.ExternalIdentity.Claims;
+                if (facebookClaims != null)
+                {
+                    var firstName = facebookClaims.First(c => c.Type.Equals(first_name)).Value;
+                    var lastName = facebookClaims.First(c => c.Type.Equals(last_name)).Value;
+                    var birthday = facebookClaims.First(c => c.Type.Equals(birthday_facebook)).Value;
 
-                DateTime d = DateTime.Parse(birthday);
-                if (info == null)
-                {
-                    return View("ExternalLoginFailure");
-                }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email , PersonalInformation = new PersonalInformation {Name = firstName , LastName = lastName ,Age = d ,  RegistrationDate = DateTime.Now  } };
-                var result = await UserManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await UserManager.AddLoginAsync(user.Id, info.Login);
+                    DateTime d = DateTime.Parse(birthday);
+                    if (info == null)
+                    {
+                        return View("ExternalLoginFailure");
+                    }
+                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email, PersonalInformation = new PersonalInformation { Name = firstName, LastName = lastName, Age = d, RegistrationDate = DateTime.Now } };
+                    var result = await UserManager.CreateAsync(user);
                     if (result.Succeeded)
                     {
-                        await UserManager.AddToRoleAsync(user.Id, "user");
-                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                        return RedirectToLocal(returnUrl);
+                        result = await UserManager.AddLoginAsync(user.Id, info.Login);
+                        if (result.Succeeded)
+                        {
+                            await UserManager.AddToRoleAsync(user.Id, "user");
+                            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                            return RedirectToLocal(returnUrl);
+                        }
                     }
+                    AddErrors(result);
                 }
-                AddErrors(result);
             }
 
             ViewBag.ReturnUrl = returnUrl;

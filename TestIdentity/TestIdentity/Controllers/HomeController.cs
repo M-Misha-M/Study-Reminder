@@ -56,10 +56,10 @@ namespace TestIdentity.Controllers
         [HttpPost]
         public ActionResult AddDateToDatabase(StudyDateViewModel model)
         {
-            DateTime? StudyDate = (DateTime)model.StudyDate;
-            const int monthDays = 31;
-            const int weekDays = 7;
-            const int oneDay = 12;
+            var studyDate = (DateTime)model.StudyDate;
+            const int MonthDays = 31;
+            const int WeekDays = -7;
+            const int OneDay = -1;
 
             if (ModelState.IsValid)
             {
@@ -74,20 +74,14 @@ namespace TestIdentity.Controllers
 
                 changeStudyDate.StudyDate = model.StudyDate;
                 db.SaveChanges();
-                int difference = (int)(StudyDate - startDate).Value.TotalDays;
-
-                if(difference == 30 || difference == 31)
+                var dateMonth = studyDate.AddMonths(-1);
+                var dateWeeks = studyDate.AddDays(WeekDays);
+                var dateOneDay = studyDate.AddDays(OneDay);
+                if(dateMonth > DateTime.Now)
                 {
-                    BackgroundJob.Enqueue(() => SendEmail(user.Email, monthDays));
-                }
-                else if(difference == 7)
-                {
-                    BackgroundJob.Enqueue(() => SendEmail(user.Email, weekDays));
-                }
-                else if(difference == 1)
-                {
-                    BackgroundJob.Enqueue(() => SendEmail(user.Email, oneDay));
-                }              
+                    BackgroundJob.Schedule(() => SendEmail(user.Email , MonthDays),dateMonth);
+                   
+                }                
             }          
             return RedirectToAction("PersonalCabinet");
         }

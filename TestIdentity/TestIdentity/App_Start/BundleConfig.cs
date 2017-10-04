@@ -39,7 +39,7 @@ namespace TestIdentity
                 "~/Scripts/angular-animate.js",
                 "~/Scripts/loading-bar.js",
                 "~/app/app.js",
-                "~/app/simpleGrid/simpleGrid.js",
+                "~/app/simpleGrid/Controllers/studentController.js",
                 "~/app/simpleGrid/Service/dataService.js"
                 ));
 

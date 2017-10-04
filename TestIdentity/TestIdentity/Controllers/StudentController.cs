@@ -44,8 +44,8 @@ namespace TestIdentity.Controllers
 
                 return new StudentContainer
                        {
-                         Students = students,
-                         RecordCount = totalNumberOfRecords
+                           Students = students,
+                           RecordCount = totalNumberOfRecords
                        };
                
             }
