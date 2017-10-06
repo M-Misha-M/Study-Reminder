@@ -6,6 +6,7 @@ using System.Linq.Dynamic;
 using Hangfire;
 using TestIdentity.DAL;
 using TestIdentity.Models;
+using System.Data.Entity;
 
 namespace TestIdentity.Controllers
 {
@@ -37,11 +38,10 @@ namespace TestIdentity.Controllers
         }
 
         public ActionResult Contact()
-        {
+        {                  
             ViewBag.Message = "Your contact page.";
             return View();
         }
-
 
         public void SendEmail(string email, int day)
         {
@@ -50,38 +50,24 @@ namespace TestIdentity.Controllers
             identityMessage.Subject = "Start study";
             identityMessage.Body = $"Your study start will begin through  {day} days";
             identityMessage.Destination = email;
-            emailService.SendAsync(identityMessage);
+            emailService.Send(identityMessage);
         }
 
         [HttpPost]
         public ActionResult AddDateToDatabase(StudyDateViewModel model)
         {
-            var studyDate = (DateTime)model.StudyDate;
-            const int MonthDays = 31;
-            const int WeekDays = -7;
-            const int OneDay = -1;
-
+            var studyDate = (DateTime)model.StudyDate;          
             if (ModelState.IsValid)
             {
                 ApplicationDbContext db = new ApplicationDbContext();
                 string userId = User.Identity.GetUserId();
-                var user = db.Users.FirstOrDefault(u => u.Id == userId);
-                DateTime startDate = DateTime.Now;
-
+                var user = db.Users.FirstOrDefault(u => u.Id == userId);      
                 var changeStudyDate = db.PersonalInformation
                                         .Where(c => c.UserId == userId)
                                         .FirstOrDefault();
 
                 changeStudyDate.StudyDate = model.StudyDate;
-                db.SaveChanges();
-                var dateMonth = studyDate.AddMonths(-1);
-                var dateWeeks = studyDate.AddDays(WeekDays);
-                var dateOneDay = studyDate.AddDays(OneDay);
-                if(dateMonth > DateTime.Now)
-                {
-                    BackgroundJob.Schedule(() => SendEmail(user.Email , MonthDays),dateMonth);
-                   
-                }                
+                db.SaveChanges();                                             
             }          
             return RedirectToAction("PersonalCabinet");
         }

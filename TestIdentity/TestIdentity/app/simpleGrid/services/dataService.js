@@ -14,8 +14,6 @@
 
             return promise;
         }
-
-
     };
     return service;
    

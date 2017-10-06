@@ -7,7 +7,7 @@ using TestIdentity.Models;
 
 namespace TestIdentity.DAL
 {
-    interface IRepository<T> : IDisposable
+    public interface IRepository<T> : IDisposable
         where T : class
     {
         IQueryable<T> Get();

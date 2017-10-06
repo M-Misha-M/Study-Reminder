@@ -23,7 +23,7 @@ namespace TestIdentity.DAL
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            db.Dispose();
         }
 
         public IQueryable<T> Get()

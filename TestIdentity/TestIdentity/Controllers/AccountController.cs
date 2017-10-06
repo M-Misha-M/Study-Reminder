@@ -383,13 +383,17 @@ namespace TestIdentity.Controllers
                     {
                         return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
                     }
-                case SignInStatus.Failure: 
-                default:
+                    case SignInStatus.Failure: 
+                    default:
                     {
                         // If the user does not have an account, then prompt the user to create an account
                         ViewBag.ReturnUrl = returnUrl;
                         ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                        return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
+                        return View("ExternalLoginConfirmation", 
+                                     new ExternalLoginConfirmationViewModel
+                                     {
+                                         Email = loginInfo.Email
+                                     });
                     }
                 }
             }
@@ -401,9 +405,9 @@ namespace TestIdentity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
-            const string first_name = "urn:facebook:first_name";
-            const string last_name = "urn:facebook:last_name";
-            const string birthday_facebook = "urn:facebook:birthday";
+            const string FirstName = "urn:facebook:first_name";
+            const string LastName = "urn:facebook:last_name";
+            const string BirthdayFacebook = "urn:facebook:birthday";
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Manage");
@@ -415,16 +419,27 @@ namespace TestIdentity.Controllers
                 var facebookClaims = info.ExternalIdentity.Claims;
                 if (facebookClaims != null)
                 {
-                    var firstName = facebookClaims.First(c => c.Type.Equals(first_name)).Value;
-                    var lastName = facebookClaims.First(c => c.Type.Equals(last_name)).Value;
-                    var birthday = facebookClaims.First(c => c.Type.Equals(birthday_facebook)).Value;
+                    var firstName = facebookClaims.First(c => c.Type.Equals(FirstName)).Value;
+                    var lastName = facebookClaims.First(c => c.Type.Equals(LastName)).Value;
+                    var birthday = facebookClaims.First(c => c.Type.Equals(BirthdayFacebook)).Value;
 
                     DateTime d = DateTime.Parse(birthday);
                     if (info == null)
                     {
                         return View("ExternalLoginFailure");
                     }
-                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email, PersonalInformation = new PersonalInformation { Name = firstName, LastName = lastName, Age = d, RegistrationDate = DateTime.Now } };
+                    var user = new ApplicationUser
+                               {
+                                  UserName = model.Email,
+                                  Email = model.Email,
+                                  PersonalInformation = new PersonalInformation
+                                                        {
+                                                           Name = firstName,
+                                                           LastName = lastName,
+                                                           Age = d,
+                                                           RegistrationDate = DateTime.Now
+                                                        }
+                              };
                     var result = await UserManager.CreateAsync(user);
                     if (result.Succeeded)
                     {
