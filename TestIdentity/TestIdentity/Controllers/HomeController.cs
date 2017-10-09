@@ -43,16 +43,7 @@ namespace TestIdentity.Controllers
             return View();
         }
 
-        public void SendEmail(string email, int day)
-        {
-            EmailService emailService = new EmailService();
-            IdentityMessage identityMessage = new IdentityMessage();
-            identityMessage.Subject = "Start study";
-            identityMessage.Body = $"Your study start will begin through  {day} days";
-            identityMessage.Destination = email;
-            emailService.Send(identityMessage);
-        }
-
+       
         [HttpPost]
         public ActionResult AddDateToDatabase(StudyDateViewModel model)
         {

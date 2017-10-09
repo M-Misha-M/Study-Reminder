@@ -33,7 +33,7 @@ namespace TestIdentity.Models
 
             if (result.Succeeded)
             {
-                // добавляем для пользователя роль
+                // add role to admin user and registered user
                 userManager.AddToRole(admin.Id, roleAdmin.Name);
                 userManager.AddToRole(admin.Id, roleUser.Name);
             }

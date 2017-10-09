@@ -3,7 +3,6 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.Google;
 using Owin;
 using TestIdentity.Models;
 using Microsoft.Owin.Security.Facebook;
@@ -13,26 +12,26 @@ namespace TestIdentity
 {
     public partial class Startup
     {
-        // Дополнительные сведения о настройке проверки подлинности см. по адресу: http://go.microsoft.com/fwlink/?LinkId=301864
+        // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301864
         public void ConfigureAuth(IAppBuilder app)
         {
-            // Настройка контекста базы данных, диспетчера пользователей и диспетчера входа для использования одного экземпляра на запрос
+            //  Configure the db context, user manager and signin manager to use a single instance per request 
             app.CreatePerOwinContext(ApplicationDbContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
             app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);
 
-
-            // Включение использования файла cookie, в котором приложение может хранить информацию для пользователя, выполнившего вход,
-            // и использование файла cookie для временного хранения информации о входах пользователя с помощью стороннего поставщика входа
-            // Настройка файла cookie для входа
+           // Enable the application to use a cookie to store information for the signed in user
+            // and to use a cookie to temporarily store information about a user logging in with a third party login provider 
+            // Configure the sign in cookie 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
                 LoginPath = new PathString("/Account/Login"),
                 Provider = new CookieAuthenticationProvider
                 {
-                    // Позволяет приложению проверять метку безопасности при входе пользователя.
-                    // Эта функция безопасности используется, когда вы меняете пароль или добавляете внешнее имя входа в свою учетную запись.  
+                    // Enables the application to validate the security stamp when the user logs in.
+                    // This securiry function use, when you change the password 
+                    //or add an external login name to your account.  
                     OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
                         validateInterval: TimeSpan.FromMinutes(30),
                         regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
@@ -40,15 +39,16 @@ namespace TestIdentity
             });            
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
-            // Позволяет приложению временно хранить информацию о пользователе, пока проверяется второй фактор двухфакторной проверки подлинности.
+            // Enables the application to temporarily store user information 
+            //when they are verifying the second factor in the two-factor authentication process. 
             app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
 
-            // Позволяет приложению запомнить второй фактор проверки имени входа. Например, это может быть телефон или почта.
-            // Если выбрать этот параметр, то на устройстве, с помощью которого вы входите, будет сохранен второй шаг проверки при входе.
-            // Точно так же действует параметр RememberMe при входе.
+            // Enables the application to remember the second login verification factor such as phone or email. 
+            // Once you check this option, your second step of verification during the login process will be remembered on the device where you logged in from. 
+            // This is similar to the RememberMe option when you log in. 
             app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
 
-            // Раскомментируйте приведенные далее строки, чтобы включить вход с помощью сторонних поставщиков входа
+            // Uncomment the following lines to enable logging in with third party login providers 
             //app.UseMicrosoftAccountAuthentication(
             //    clientId: "",
             //    clientSecret: "");
@@ -83,12 +83,6 @@ namespace TestIdentity
                     }
                 }
             });
-
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
         }
     }
 }

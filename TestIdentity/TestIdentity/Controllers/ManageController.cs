@@ -53,22 +53,17 @@ namespace TestIdentity.Controllers
             }
         }
 
-        //public async Task<ActionResult> SetStudyDate(DateTime studyDate)
-        //{
-        //    var userId = User.Identity.GetUserId();
-        //}
-
         //
         // GET: /Manage/Index
         public async Task<ActionResult> Index(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "Ваш пароль изменен."
-                : message == ManageMessageId.SetPasswordSuccess ? "Пароль задан."
-                : message == ManageMessageId.SetTwoFactorSuccess ? "Настроен поставщик двухфакторной проверки подлинности."
-                : message == ManageMessageId.Error ? "Произошла ошибка."
-                : message == ManageMessageId.AddPhoneSuccess ? "Ваш номер телефона добавлен."
-                : message == ManageMessageId.RemovePhoneSuccess ? "Ваш номер телефона удален."
+                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed"
+                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
+                : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
+                : message == ManageMessageId.Error ? "An error has occurred."
+                : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
+                : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
                 : "";
 
             var userId = User.Identity.GetUserId();
@@ -124,14 +119,14 @@ namespace TestIdentity.Controllers
             {
                 return View(model);
             }
-            // Создание и отправка маркера
+            // Generate the token and send it
             var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), model.Number);
             if (UserManager.SmsService != null)
             {
                 var message = new IdentityMessage
                 {
                     Destination = model.Number,
-                    Body = "Ваш код безопасности: " + code
+                    Body = "Your security code: " + code
                 };
                 await UserManager.SmsService.SendAsync(message);
             }
@@ -167,13 +162,12 @@ namespace TestIdentity.Controllers
             }
             return RedirectToAction("Index", "Manage");
         }
-
-        //
+        
         // GET: /Manage/VerifyPhoneNumber
         public async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
         {
             var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), phoneNumber);
-            // Отправка SMS через поставщик SMS для проверки номера телефона
+        // Send an SMS through the SMS provider to verify the phone number
             return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
         }
 
@@ -197,8 +191,8 @@ namespace TestIdentity.Controllers
                 }
                 return RedirectToAction("Index", new { Message = ManageMessageId.AddPhoneSuccess });
             }
-            // Это сообщение означает наличие ошибки; повторное отображение формы
-            ModelState.AddModelError("", "Не удалось проверить телефон");
+            // If we got this,something failed, redisplay form
+            ModelState.AddModelError("", "Failed to verify phone");
             return View(model);
         }
 
@@ -280,7 +274,7 @@ namespace TestIdentity.Controllers
                 AddErrors(result);
             }
 
-            // Это сообщение означает наличие ошибки; повторное отображение формы
+            // redisplay form if something go wrong
             return View(model);
         }
 
@@ -289,8 +283,8 @@ namespace TestIdentity.Controllers
         public async Task<ActionResult> ManageLogins(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
-                message == ManageMessageId.RemoveLoginSuccess ? "Внешнее имя входа удалено."
-                : message == ManageMessageId.Error ? "Произошла ошибка."
+                message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
+                : message == ManageMessageId.Error ? "An error has occurred."
                 : "";
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
             if (user == null)
@@ -313,7 +307,7 @@ namespace TestIdentity.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LinkLogin(string provider)
         {
-            // Запрос перенаправления к внешнему поставщику входа для связывания имени входа текущего пользователя
+            // Request a redirect to the external login provider to link a login for the current user
             return new AccountController.ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"), User.Identity.GetUserId());
         }
 
@@ -341,8 +335,8 @@ namespace TestIdentity.Controllers
             base.Dispose(disposing);
         }
 
-#region Вспомогательные приложения
-        // Используется для защиты от XSRF-атак при добавлении внешних имен входа
+        #region helpers
+        //  Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
         private IAuthenticationManager AuthenticationManager

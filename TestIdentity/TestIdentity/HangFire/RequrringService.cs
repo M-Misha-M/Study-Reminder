@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using TestIdentity.DAL;
 using TestIdentity.Models;
 
@@ -32,9 +30,9 @@ namespace TestIdentity.HangFire
             const int DaysMonth = 31;
             const int DaysWeek = 7;
             const int OneDay = 1;
-            var oneMonthFromNow = DateTime.Now.AddMonths(1).Date;
-            var oneWeekFromNow = DateTime.Now.AddDays(7).Date;
-            var oneDay = DateTime.Now.AddDays(1).Date;
+            var oneMonthFromNow = DateTime.UtcNow.AddMonths(1).Date;
+            var oneWeekFromNow = DateTime.UtcNow.AddDays(7).Date;
+            var oneDay = DateTime.UtcNow.AddDays(1).Date;
             var user = repository.Get()
                                   .Where(x => (x.StudyDate == oneMonthFromNow) || 
                                         (x.StudyDate == oneWeekFromNow) ||

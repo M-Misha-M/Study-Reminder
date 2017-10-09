@@ -105,13 +105,12 @@ namespace TestIdentity.Controllers
 
         }
 
-
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
-            // Требовать предварительный вход пользователя с помощью имени пользователя и пароля или внешнего имени входа
+            // Sign in the user with this external login provider if the user already has a login
             if (!await SignInManager.HasBeenVerifiedAsync())
             {
                 return View("Error");
@@ -131,9 +130,9 @@ namespace TestIdentity.Controllers
                 return View(model);
             }
 
-            // Приведенный ниже код защищает от атак методом подбора, направленных на двухфакторные коды. 
-            // Если пользователь введет неправильные коды за указанное время, его учетная запись 
-            // будет заблокирована на заданный период. 
+            // The following code protects for brute force attacks against the two factor codes 
+            // If a user enters incorrect codes for a specified amount of time then the user account 
+            // will be blocked for the specified period.
             // Параметры блокирования учетных записей можно настроить в IdentityConfig
             var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
@@ -144,7 +143,7 @@ namespace TestIdentity.Controllers
                     return View("Lockout");
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Неправильный код.");
+                    ModelState.AddModelError("", "Invalid code");
                     return View(model);
             }
         }
@@ -184,7 +183,7 @@ namespace TestIdentity.Controllers
                         Name = model.Name,
                         LastName = model.LastName,
                         Age = model.Age,
-                        RegistrationDate = DateTime.Now,
+                        RegistrationDate = DateTime.UtcNow,
                         StudyDate = model.StudynDate
                     }
                 };
@@ -244,19 +243,18 @@ namespace TestIdentity.Controllers
                 var user = await UserManager.FindByNameAsync(model.Email);
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
-                    // Не показывать, что пользователь не существует или не подтвержден
+                    // Do not show that the user does not exist or is not verified
                     return View("ForgotPasswordConfirmation");
                 }
 
-                // Дополнительные сведения о том, как включить подтверждение учетной записи и сброс пароля, см. по адресу: http://go.microsoft.com/fwlink/?LinkID=320771
-                // Отправка сообщения электронной почты с этой ссылкой
+                // Send an email with this link
                 // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Сброс пароля", "Сбросьте ваш пароль, щелкнув <a href=\"" + callbackUrl + "\">здесь</a>");
+                // await UserManager.SendEmailAsync(user.Id, "Сброс пароля", "Reset your password, by clicking <a href=\"" + callbackUrl + "\">here</a>");
                 // return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
-            // Появление этого сообщения означает наличие ошибки; повторное отображение формы
+            // Something go wrong and we get an error; show our form again
             return View(model);
         }
 
@@ -423,7 +421,7 @@ namespace TestIdentity.Controllers
                     var lastName = facebookClaims.First(c => c.Type.Equals(LastName)).Value;
                     var birthday = facebookClaims.First(c => c.Type.Equals(BirthdayFacebook)).Value;
 
-                    DateTime d = DateTime.Parse(birthday);
+                    DateTime date = DateTime.Parse(birthday);
                     if (info == null)
                     {
                         return View("ExternalLoginFailure");
@@ -436,8 +434,8 @@ namespace TestIdentity.Controllers
                                                         {
                                                            Name = firstName,
                                                            LastName = lastName,
-                                                           Age = d,
-                                                           RegistrationDate = DateTime.Now
+                                                           Age = date,
+                                                           RegistrationDate = DateTime.UtcNow
                                                         }
                               };
                     var result = await UserManager.CreateAsync(user);
@@ -497,8 +495,8 @@ namespace TestIdentity.Controllers
             base.Dispose(disposing);
         }
 
-        #region Вспомогательные приложения
-        // Используется для защиты от XSRF-атак при добавлении внешних имен входа
+        #region Helpers
+        // Used to protect from XSRF attacks when adding external login names
         private const string XsrfKey = "XsrfId";
 
         private IAuthenticationManager AuthenticationManager

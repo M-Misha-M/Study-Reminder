@@ -61,12 +61,6 @@
     <!-- BEGIN LOGIN -->
     <div class="content">
         <!-- BEGIN LOGIN FORM -->
-
-
-
-
-
-
         @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "login-form", role = "form" }))
         {
             @Html.AntiForgeryToken()
@@ -101,12 +95,7 @@
             </div>
             <div class="login-options">
                 <h4>Or login with</h4>
-                <ul class="social-icons">
-                    <li>
-
-
-
-                    </li>
+                <ul class="social-icons">                
                     <li>
                         <a class="social-icon-color facebook" data-original-title="facebook" href="javascript:;"></a>
                     </li>

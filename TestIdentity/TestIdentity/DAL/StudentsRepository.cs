@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using TestIdentity.Models;
 
 namespace TestIdentity.DAL
@@ -30,8 +27,6 @@ namespace TestIdentity.DAL
         {
             return db.Set<T>();
         }
-
-        
 
         public void Save() 
         {

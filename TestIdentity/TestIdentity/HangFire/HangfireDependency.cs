@@ -2,18 +2,13 @@
 using Hangfire;
 using Hangfire.SqlServer;
 using Owin;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace TestIdentity.HangFire
 {
     public  static class HangfireDependency
     {
         public static void InitializeHangfireDependencies(IAppBuilder app)
-        {
-            
+        {           
             var builder = new ContainerBuilder();
             builder.RegisterModule(new AutofacStandardModule());
             var container = builder.Build();
@@ -25,8 +20,6 @@ namespace TestIdentity.HangFire
             JobStorage.Current = storage;
             app.UseHangfireServer(new BackgroundJobServerOptions(), storage);
             app.UseHangfireDashboard("/Hangfire", new DashboardOptions(), storage);
-
-
         }
     }
 }
