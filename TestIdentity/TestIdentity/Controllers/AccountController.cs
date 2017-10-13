@@ -133,18 +133,23 @@ namespace TestIdentity.Controllers
             // The following code protects for brute force attacks against the two factor codes 
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be blocked for the specified period.
-            // Параметры блокирования учетных записей можно настроить в IdentityConfig
             var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(model.ReturnUrl);
+                {
+                  return RedirectToLocal(model.ReturnUrl);
+                }
                 case SignInStatus.LockedOut:
-                    return View("Lockout");
+                {
+                  return View("Lockout");
+                }
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Invalid code");
-                    return View(model);
+                {
+                  ModelState.AddModelError(string.Empty, "Invalid code");
+                  return View(model);
+                }
             }
         }
 
@@ -182,7 +187,7 @@ namespace TestIdentity.Controllers
                     {
                         Name = model.Name,
                         LastName = model.LastName,
-                        Age = model.Age,
+                        BirthDate = model.BirthDate,
                         RegistrationDate = DateTime.UtcNow,
                         StudyDate = model.StudynDate
                     }
@@ -200,8 +205,6 @@ namespace TestIdentity.Controllers
                       "To finish registration please click:: <a href=\""
                                                       + callbackUrl + "\">Finish Registration</a>");
                     await UserManager.AddToRoleAsync(user.Id, "user");
-                    // await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-
                     return View("DisplayEmail");
 
                 }
@@ -246,12 +249,6 @@ namespace TestIdentity.Controllers
                     // Do not show that the user does not exist or is not verified
                     return View("ForgotPasswordConfirmation");
                 }
-
-                // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Сброс пароля", "Reset your password, by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // Something go wrong and we get an error; show our form again
@@ -421,7 +418,7 @@ namespace TestIdentity.Controllers
                     var lastName = facebookClaims.First(c => c.Type.Equals(LastName)).Value;
                     var birthday = facebookClaims.First(c => c.Type.Equals(BirthdayFacebook)).Value;
 
-                    DateTime date = DateTime.Parse(birthday);
+                    DateTime birthDate = DateTime.Parse(birthday);
                     if (info == null)
                     {
                         return View("ExternalLoginFailure");
@@ -434,8 +431,8 @@ namespace TestIdentity.Controllers
                                                         {
                                                            Name = firstName,
                                                            LastName = lastName,
-                                                           Age = date,
-                                                           RegistrationDate = DateTime.UtcNow
+                                                           BirthDate = birthDate,
+                                                           RegistrationDate = DateTime.UtcNow 
                                                         }
                               };
                     var result = await UserManager.CreateAsync(user);

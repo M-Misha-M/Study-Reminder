@@ -3,21 +3,21 @@
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
-    @Html.AntiForgeryToken()
+        @Html.AntiForgeryToken()
 
         <div class="top-menu"></div>
-    <ul class="nav navbar-nav pull-right">
-        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-
-
-
-
-        </li>
-<li>
-            @Html.ActionLink("Hello, " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
-        </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log out</a></li>
-    </ul>
+        <ul class="nav navbar-nav pull-right">
+            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+            </li>
+            <li>
+                @Html.ActionLink("Hello, " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+            </li>
+            <li >
+                <a href="javascript:document.getElementById('logoutForm').submit()" >
+                    <i class="glyphicon glyphicon-log-out"></i>
+                </a>
+            </li>
+        </ul>
     }
 }
 else

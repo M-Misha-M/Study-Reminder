@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using System;
 using System.Linq;
+using System.Net.Mail;
 using TestIdentity.DAL;
 using TestIdentity.Models;
 
@@ -15,14 +16,15 @@ namespace TestIdentity.HangFire
             repository = repo;
         }
 
-        public  void SendEmail(string email, int day)
-        {
-            EmailService emailService = new EmailService();
-            IdentityMessage identityMessage = new IdentityMessage();
-            identityMessage.Subject = "Start study";
-            identityMessage.Body = $"Your study start will begin through  {day} day(s)";
-            identityMessage.Destination = email;
-            emailService.SendAsync(identityMessage);
+        public void SendEmail(string email, int day)
+        {            
+            MailMessage message = new MailMessage();
+            message.Subject = "Start study";
+            message.Body = $"Your study start will begin through  {day} day(s)";
+            message.IsBodyHtml = true;
+            message.To.Add(email);           
+            SmtpClient smtp = new SmtpClient();
+            smtp.Send(message);
         }
 
         public void CheckEducationDate()
@@ -34,24 +36,27 @@ namespace TestIdentity.HangFire
             var oneWeekFromNow = DateTime.UtcNow.AddDays(7).Date;
             var oneDay = DateTime.UtcNow.AddDays(1).Date;
             var user = repository.Get()
-                                  .Where(x => (x.StudyDate == oneMonthFromNow) || 
-                                        (x.StudyDate == oneWeekFromNow) ||
+                                  .Where(x => (x.StudyDate == oneMonthFromNow) 
+                                           || 
+                                        (x.StudyDate == oneWeekFromNow) 
+                                           ||
                                         (x.StudyDate == oneDay))
                                   .ToList();
             user.ForEach(u => 
             {
-                if (u.StudyDate.Value.Date == oneMonthFromNow)
-                {
-                    SendEmail(u.ApplicationUser.Email, DaysMonth);
-                }
-                else if(u.StudyDate.Value.Date == oneWeekFromNow)
-                {
-                  SendEmail(u.ApplicationUser.Email, DaysWeek);
-                }
-                else if(u.StudyDate.Value.Date == oneDay)
-                {
-                    SendEmail(u.ApplicationUser.Email, OneDay);
-                }
+                SendEmail(u.ApplicationUser.Email, (int)(u.StudyDate.Value.Date - DateTime.UtcNow.Date).TotalDays);
+                //if (u.StudyDate.Value.Date == oneMonthFromNow)
+                //{
+                //    SendEmail(u.ApplicationUser.Email, DaysMonth);
+                //}
+                //else if(u.StudyDate.Value.Date == oneWeekFromNow)
+                //{
+                //  SendEmail(u.ApplicationUser.Email, DaysWeek);
+                //}
+                //else if(u.StudyDate.Value.Date == oneDay)
+                //{
+                //    SendEmail(u.ApplicationUser.Email, OneDay);
+                //}
             });
         }
     }

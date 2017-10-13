@@ -8,7 +8,8 @@
          <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="~/Content/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
         <link href="~/Content/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
-        <!-- END PAGE LEVEL PLUGINS -->      
+        <!-- END PAGE LEVEL PLUGINS -->                
+        <link href="~/Content/arrows.css" rel="stylesheet" type="text/css" />   
         }
 <div ng-controller="studentController">   
     <div class="row">
@@ -25,9 +26,9 @@
                                                 aria-controls="sample_1" 
                                                 class="form-control input-sm input-xsmall input-inline"
                                                 ng-model="recordsPerPage"
+                                                ng-options='option.value as option.name for option in typeOptions'
                                                 ng-change="changePageSize()">
-                                            <option value="5">5</option>
-                                            <option value="7">7</option>
+                                           
                                             
                                         </select>
                                     </label>
@@ -52,44 +53,42 @@
                                    table-checkable order-column 
                                    dataTable no-footer">
                                 <thead>
-                                    <tr role="row">
+                                    <tr class="sortable" role="row">
 
-                                        <th ng-click="sort('Name')" class="sorting" tabindex="0" aria-controls="sample_1" 
-                                            rowspan="1" 
-                                            colspan="1" aria-sort="ascending" 
-                                            aria-label="Username : activate to sort column descending">
+                                        <th ng-click="sort('Name')" 
+                                            ng-class='sortClass("Name")'>
                                               Name
                                         </th>
 
-                                        <th ng-click="sort('LastName')" 
-                                            class="sorting" 
-                                            tabindex="0" 
-                                            aria-controls="sample_1" 
-                                            rowspan="1" colspan="1" 
-                                            aria-label="Email : activate to sort column ascending"> 
+                                        <th ng-click="sort('LastName')"
+                                            ng-class='sortClass("LastName")'>
+                                     
                                             Last Name 
                                         </th>
 
                                         <th ng-click="sort('Email')" 
-                                            class="sorting" tabindex="0" 
-                                            aria-controls="sample_1" 
-                                            rowspan="1" colspan="1" 
-                                            aria-label="Email : activate to sort column ascending">
+                                            ng-class='sortClass("Email")'>
                                                Email
                                         </th>
 
-                                        <th ng-click="sort('Age')" class="sorting">
+                                        <th ng-click="sort('BirthDate')">
+                                           
                                             Birthday
                                         </th>
 
-                                        <th class="sorting" ng-click="sort('RegistrationDate')">
+                                        <th  ng-click="sort('RegistrationDate')">
+                                           
                                             Register date
                                         </th>
 
+                                        <th ng-click="sort('StudyDate')">
+                                            
+                                            Study date
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="i in data|orderBy:sortKey:reverse" class="gradeX odd">
+                                    <tr ng-repeat="i in data" class="gradeX odd">
 
                                         <td>
                                             {{i.Name}}
@@ -105,11 +104,18 @@
                                         </td>
 
                                         <td>
-                                            {{i.Age | date :  "dd.MM.y"}}
+                                            {{i.BirthDate | date : "dd.MM.y"}}
                                         </td>
 
                                         <td class="center">
                                             {{i.RegistrationDate | date:"yyyy-MM-dd HH:mm:ss" }}
+                                        </td>
+
+                                        <td class="center" ng-if ="i.StudynDate != null">
+                                            {{i.StudynDate   | date: "dd.MM.y"}}
+                                        </td>
+                                        <td class="center" ng-if="i.StudynDate == null">
+                                            <span class="label label-sm label-warning"> Not Selected </span>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -121,7 +127,7 @@
                                 <div class="dataTables_info" 
                                      id="sample_1_info" 
                                      role="status" 
-                                     aria-live="polite">Showing {{recordsPerPage}}  per page
+                                     aria-live="polite">Showing {{recordsPerPage}} of {{totalItems}}  records
                                 </div>
                             </div>
 

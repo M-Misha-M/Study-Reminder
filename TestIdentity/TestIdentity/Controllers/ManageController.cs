@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using TestIdentity.Models;
 using TestIdentity.DAL;
+using System.Collections.Generic;
 
 namespace TestIdentity.Controllers
 {
@@ -16,12 +17,6 @@ namespace TestIdentity.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        IRepository<PersonalInformation> personRepository;
-
-        public ManageController()
-        {
-            //personRepository = new 
-        }
 
         public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
@@ -56,16 +51,15 @@ namespace TestIdentity.Controllers
         //
         // GET: /Manage/Index
         public async Task<ActionResult> Index(ManageMessageId? message)
-        {
-            ViewBag.StatusMessage =
+        {         
+           ViewBag.StatusMessage =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed"
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
                 : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
                 : message == ManageMessageId.Error ? "An error has occurred."
                 : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
-                : "";
-
+                : string.Empty;
             var userId = User.Identity.GetUserId();
             var model = new IndexViewModel
             {

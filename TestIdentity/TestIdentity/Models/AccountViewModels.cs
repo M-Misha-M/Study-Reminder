@@ -88,7 +88,7 @@ namespace TestIdentity.Models
         public string LastName { get; set; }
         [Required]
         [DataType(DataType.DateTime)]
-        public DateTime? Age { get; set; }
+        public DateTime? BirthDate { get; set; }
 
        
         public DateTime? RegistrationDate { get; set; }

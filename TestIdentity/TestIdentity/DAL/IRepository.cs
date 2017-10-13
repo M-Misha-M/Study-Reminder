@@ -13,7 +13,7 @@ namespace TestIdentity.DAL
         IQueryable<T> Get();
        
         void Create(PersonalInformation item);
-        void Update(T item); 
+        void Update(PersonalInformation personalInformation); 
         void Delete(int id); 
         void Save(); 
     }

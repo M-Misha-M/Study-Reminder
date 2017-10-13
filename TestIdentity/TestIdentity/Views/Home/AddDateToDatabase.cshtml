@@ -2,21 +2,20 @@
 
 @using (Html.BeginForm("AddDateToDatabase", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <div class="form-group">
-        <label class="control-label col-md-4">Start With Years</label>
-        <div class="col-md-8">
-            <div class="input-group input-medium date date-picker"  data-date-format="dd-mm-yyyy" data-date-viewmode="years">
-                @Html.TextBoxFor(m => m.StudyDate, new { @class = "form-control" })
-                <span class="input-group-btn">
-                    <button class="btn default" type="button">
-                        <i class="fa fa-calendar"></i>
-                    </button>
-                </span>
-            </div>
-            <!-- /input-group -->
+    <div class="col-md-8">
+        <div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
+            @Html.TextBoxFor(m => m.StudyDate, new { @class = "form-control" })
+            <span class="input-group-btn">
+                <button class="btn default" type="button">
+                    <i class="fa fa-calendar"></i>
+                </button>
+            </span>
         </div>
+        <!-- /input-group -->
+        <span class="help-block"> Select study date </span>
+        <input type="submit" value="Add" class="btn btn-info" />
     </div>
 
-    <input type="submit" value="Add" class="btn btn-default" />
+    
 }
 

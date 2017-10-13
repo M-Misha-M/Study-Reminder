@@ -1,7 +1,5 @@
 ﻿var myApp = angular.module('ngWebApiGrid.simpleGrid', ['ui.bootstrap'])
 
-
-
 myApp.controller("studentController", ["$scope", "dataService","localStorageService",
     function ($scope, dataService, localStorageService) {
         $scope.totalItems = 0;
@@ -11,8 +9,19 @@ myApp.controller("studentController", ["$scope", "dataService","localStorageServ
         $scope.NumberOfPageButtons = 5;
         $scope.search = "";
 
+        // column to sort
+        $scope.sortKey = 'Name';
+        $scope.isAscSort = true;
+
+        $scope.typeOptions =
+       [
+        { name: 5, value: 5 },
+        { name: 8, value: 8 },
+        { name: 10, value: 10 }
+       ];
+
         $scope.getData = function () {
-            dataService.getStudents($scope.currentPage, $scope.recordsPerPage , $scope.search).then(function (studentInfo) {
+            dataService.getStudents($scope.currentPage, $scope.recordsPerPage, $scope.search, $scope.sortKey, $scope.isAscSort).then(function (studentInfo) {
                 $scope.totalItems = studentInfo.RecordCount;
                 $scope.data = studentInfo.Students;
                 
@@ -28,10 +37,26 @@ myApp.controller("studentController", ["$scope", "dataService","localStorageServ
             $scope.getData();
         };
 
-        $scope.sort = function (keyname) {
-            $scope.sortKey = keyname;   //set the sortKey to the param passed
-            $scope.reverse = !$scope.reverse; //if true make it false and vice versa
-        }
+        $scope.sort = function (col) {                    
+            $scope.sortKey = col;
+            $scope.isAscSort = !$scope.isAscSort;
+            
+            $scope.getData();
+        };
+
+   
+        $scope.sortClass = function (col) {
+            if ($scope.sortKey == col) {
+                if ($scope.isAscSort) {
+                    return 'arrow-up';
+                } else {
+                    return 'arrow-down';
+                }
+            } else {
+                return 'arrow-all';
+            }
+        };
+
 
         $scope.searchFor = function () {
             $scope.getData();

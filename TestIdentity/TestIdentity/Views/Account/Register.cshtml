@@ -14,8 +14,9 @@
 <link href="~/Content/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
 <!-- END GLOBAL MANDATORY STYLES -->
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="~/Content/assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
-<link href="~/Content/assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN THEME GLOBAL STYLES -->
 <link href="~/Content/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
@@ -29,7 +30,7 @@
 <link rel="shortcut icon" href="favicon.ico" /> 
 </head>
 <!-- END HEAD -->
-
+@section styles {}
 <style>
     #signupForm {
 		width: 670px;
@@ -97,25 +98,21 @@
 
                 <div class="form-group">
                     <label class="control-label visible-ie8 visible-ie9">Start With Years</label>
-                    <div class="col-md-3">
-                        <div class="input-group input-medium date date-picker" data-date="14-07-2017" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
-                            @Html.TextBoxFor(m => m.Age, new { @class = "form-control placeholder-no-fix" })
-                            @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+                    
+                        <div class="input-group  date date-picker"  data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                            @Html.TextBoxFor(m => m.BirthDate, new { @class = "form-control placeholder-no-fix" })
+                            @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
 
                             <span class="input-group-btn">
-                                <button class="btn default" type="button">
+                                <button class="btn btn-md default" type="button">
                                     <i class="fa fa-calendar"></i>
                                 </button>
                             </span>
                         </div>
                         <!-- /input-group -->
-                        <span class="help-block"> Select date </span>
-                    </div>
-                </div>
-
-
+                        <span class="help-block"> Select birthday date </span>                   
+                </div>               
                     <div class="form-actions">
-
                         <button type="submit" id="submit-btn" class="btn btn-success uppercase pull-right" disabled="disabled">Submit</button>
                     </div>
 

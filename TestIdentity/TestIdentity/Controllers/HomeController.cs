@@ -3,10 +3,9 @@ using System.Linq;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using System.Linq.Dynamic;
-using Hangfire;
 using TestIdentity.DAL;
 using TestIdentity.Models;
-using System.Data.Entity;
+
 
 namespace TestIdentity.Controllers
 {
@@ -47,19 +46,16 @@ namespace TestIdentity.Controllers
         [HttpPost]
         public ActionResult AddDateToDatabase(StudyDateViewModel model)
         {
-            var studyDate = (DateTime)model.StudyDate;          
+            var studyDate = model.StudyDate;          
             if (ModelState.IsValid)
             {
-                ApplicationDbContext db = new ApplicationDbContext();
                 string userId = User.Identity.GetUserId();
-                var user = db.Users.FirstOrDefault(u => u.Id == userId);      
-                var changeStudyDate = db.PersonalInformation
-                                        .Where(c => c.UserId == userId)
-                                        .FirstOrDefault();
-
-                changeStudyDate.StudyDate = model.StudyDate;
-                db.SaveChanges();                                             
-            }          
+                var changeStudyDate = personRepository.Get()
+                                            .Where(c => c.UserId == userId)
+                                            .FirstOrDefault();
+                changeStudyDate.StudyDate = studyDate;
+                personRepository.Update(changeStudyDate);
+            }
             return RedirectToAction("PersonalCabinet");
         }
     }

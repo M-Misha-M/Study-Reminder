@@ -15,24 +15,12 @@ namespace TestIdentity
     {
         public Task SendAsync(IdentityMessage message)
         {
-            var from = "mishamishamisha1996@gmail.com";
-            var pass = "alphaomega1";
-
-
-            SmtpClient client = new SmtpClient("smtp.gmail.com", 25);
-
-            client.DeliveryMethod = SmtpDeliveryMethod.Network;
-            client.UseDefaultCredentials = false;
-            client.Credentials = new System.Net.NetworkCredential(from, pass);
-            client.EnableSsl = true;
-
-            var mail = new MailMessage(from, message.Destination);
-            mail.Subject = message.Subject;
-            mail.Body = message.Body;
-            mail.IsBodyHtml = true;
-
-            // Plug in your email service here to send an email.
-            return client.SendMailAsync(mail);
+            SmtpClient client = new SmtpClient();
+            var msg = new MailMessage();
+            msg.To.Add(message.Destination);
+            msg.Subject = message.Subject;
+            msg.Body = message.Body;
+            return client.SendMailAsync(msg);
         }
     }
 
@@ -56,6 +44,7 @@ namespace TestIdentity
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
         {
             var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
+
             // Validation logic for usernames
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {

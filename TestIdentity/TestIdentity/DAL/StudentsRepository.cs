@@ -4,7 +4,7 @@ using TestIdentity.Models;
 
 namespace TestIdentity.DAL
 {
-    public class StudentsRepository<T> : IRepository<T> where T : class
+    public class StudentsRepository<T> : IDisposable ,  IRepository<T> where T : class
     {
         ApplicationDbContext db = new ApplicationDbContext();
         public void Create(PersonalInformation item)
@@ -33,9 +33,11 @@ namespace TestIdentity.DAL
             throw new NotImplementedException();
         }
 
-        public void Update(T item)
+        public void Update(PersonalInformation personalInformation)
         {
-            throw new NotImplementedException();
+            db.PersonalInformation.Attach(personalInformation);
+            db.Entry(personalInformation).Property(x => x.StudyDate).IsModified = true;
+            db.SaveChanges();
         }
     }
 }

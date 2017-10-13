@@ -63,8 +63,9 @@ namespace TestIdentity
 
             app.UseFacebookAuthentication(new FacebookAuthenticationOptions()
             {
-                AppId = "1768167133211532",
-                AppSecret = "28dc95ee3384b8270074a2261ca2330a",
+               
+                AppId = System.Configuration.ConfigurationManager.AppSettings.Get("FacebookAppId"),
+                AppSecret = System.Configuration.ConfigurationManager.AppSettings.Get("FacebookAppSecret"),
                 BackchannelHttpHandler = new HttpClientHandler(),
                 UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name,birthday",
                 Scope = { "email" , "user_birthday" },
