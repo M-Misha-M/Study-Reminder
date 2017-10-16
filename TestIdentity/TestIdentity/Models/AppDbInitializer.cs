@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity;
+using System.Configuration;
 
 namespace TestIdentity.Models
 {
@@ -17,11 +18,11 @@ namespace TestIdentity.Models
 
             var admin = new ApplicationUser
                         {
-                          Email = System.Configuration.ConfigurationManager.AppSettings.Get("AdminEmail"),
+                          Email = ConfigurationManager.AppSettings.Get("AdminEmail"),
                           UserName = "somemail@gmail.com" ,
                           EmailConfirmed = true
                         };
-            string password = System.Configuration.ConfigurationManager.AppSettings.Get("AdminPass");
+            string password = ConfigurationManager.AppSettings.Get("AdminPass");
 
             var result = userManager.Create(admin, password);
 

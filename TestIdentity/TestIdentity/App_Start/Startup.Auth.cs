@@ -7,7 +7,7 @@ using Owin;
 using TestIdentity.Models;
 using Microsoft.Owin.Security.Facebook;
 using System.Net.Http;
-
+using System.Configuration;
 namespace TestIdentity
 {
     public partial class Startup
@@ -64,8 +64,8 @@ namespace TestIdentity
             app.UseFacebookAuthentication(new FacebookAuthenticationOptions()
             {
                
-                AppId = System.Configuration.ConfigurationManager.AppSettings.Get("FacebookAppId"),
-                AppSecret = System.Configuration.ConfigurationManager.AppSettings.Get("FacebookAppSecret"),
+                AppId = ConfigurationManager.AppSettings.Get("FacebookAppId"),
+                AppSecret = ConfigurationManager.AppSettings.Get("FacebookAppSecret"),
                 BackchannelHttpHandler = new HttpClientHandler(),
                 UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name,birthday",
                 Scope = { "email" , "user_birthday" },

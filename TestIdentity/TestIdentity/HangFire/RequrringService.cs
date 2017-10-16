@@ -18,7 +18,7 @@ namespace TestIdentity.HangFire
 
         public void SendEmail(string email, int day)
         {            
-            MailMessage message = new MailMessage();
+            var message = new MailMessage();
             message.Subject = "Start study";
             message.Body = $"Your study start will begin through  {day} day(s)";
             message.IsBodyHtml = true;
@@ -29,34 +29,20 @@ namespace TestIdentity.HangFire
 
         public void CheckEducationDate()
         {
-            const int DaysMonth = 31;
-            const int DaysWeek = 7;
-            const int OneDay = 1;
-            var oneMonthFromNow = DateTime.UtcNow.AddMonths(1).Date;
-            var oneWeekFromNow = DateTime.UtcNow.AddDays(7).Date;
-            var oneDay = DateTime.UtcNow.AddDays(1).Date;
+            const int oneMonth = 1;
+            const int weekDays = 7;
+            const int oneDay = 1; 
+            var oneMonthFromNow = DateTime.UtcNow.AddMonths(oneMonth).Date;
+            var oneWeekFromNow = DateTime.UtcNow.AddDays(weekDays).Date;
+            var oneDayFromNow = DateTime.UtcNow.AddDays(oneDay).Date;
             var user = repository.Get()
                                   .Where(x => (x.StudyDate == oneMonthFromNow) 
-                                           || 
-                                        (x.StudyDate == oneWeekFromNow) 
-                                           ||
-                                        (x.StudyDate == oneDay))
+                                           || (x.StudyDate == oneWeekFromNow) 
+                                           || (x.StudyDate == oneDayFromNow))
                                   .ToList();
             user.ForEach(u => 
             {
                 SendEmail(u.ApplicationUser.Email, (int)(u.StudyDate.Value.Date - DateTime.UtcNow.Date).TotalDays);
-                //if (u.StudyDate.Value.Date == oneMonthFromNow)
-                //{
-                //    SendEmail(u.ApplicationUser.Email, DaysMonth);
-                //}
-                //else if(u.StudyDate.Value.Date == oneWeekFromNow)
-                //{
-                //  SendEmail(u.ApplicationUser.Email, DaysWeek);
-                //}
-                //else if(u.StudyDate.Value.Date == oneDay)
-                //{
-                //    SendEmail(u.ApplicationUser.Email, OneDay);
-                //}
             });
         }
     }

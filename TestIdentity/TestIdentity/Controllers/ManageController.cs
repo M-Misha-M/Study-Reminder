@@ -286,7 +286,10 @@ namespace TestIdentity.Controllers
                 return View("Error");
             }
             var userLogins = await UserManager.GetLoginsAsync(User.Identity.GetUserId());
-            var otherLogins = AuthenticationManager.GetExternalAuthenticationTypes().Where(auth => userLogins.All(ul => auth.AuthenticationType != ul.LoginProvider)).ToList();
+            var otherLogins = AuthenticationManager.GetExternalAuthenticationTypes()
+                              .Where(auth => userLogins
+                              .All(ul => auth.AuthenticationType != ul.LoginProvider))
+                              .ToList();
             ViewBag.ShowRemoveButton = user.PasswordHash != null || userLogins.Count > 1;
             return View(new ManageLoginsViewModel
             {
@@ -315,7 +318,12 @@ namespace TestIdentity.Controllers
                 return RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
             }
             var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
-            return result.Succeeded ? RedirectToAction("ManageLogins") : RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
+            return result.Succeeded ? RedirectToAction("ManageLogins") 
+                                    : RedirectToAction("ManageLogins", 
+                                    new
+                                    {
+                                       Message = ManageMessageId.Error
+                                    });
         }
 
         protected override void Dispose(bool disposing)

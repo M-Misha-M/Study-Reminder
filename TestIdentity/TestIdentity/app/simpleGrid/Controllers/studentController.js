@@ -1,38 +1,43 @@
-﻿var myApp = angular.module('ngWebApiGrid.simpleGrid', ['ui.bootstrap'])
+﻿var myApp = angular.module('studentApp.simpleGrid', ['ui.bootstrap'])
 
-myApp.controller("studentController", ["$scope", "dataService","localStorageService",
-    function ($scope, dataService, localStorageService) {
+myApp.controller("studentController", ["$scope", "dataService",
+    function ($scope, dataService) {
         $scope.totalItems = 0;
         $scope.currentPage = 1;
         $scope.maxSize = 5;
         $scope.recordsPerPage = 5;
         $scope.NumberOfPageButtons = 5;
         $scope.search = "";
-
         // column to sort
         $scope.sortKey = 'Name';
         $scope.isAscSort = true;
-
         $scope.typeOptions =
-       [
-        { name: 5, value: 5 },
-        { name: 8, value: 8 },
-        { name: 10, value: 10 }
+       [{
+           name: 5,
+           value: 5
+       },
+     {
+         name: 8,
+         value: 8
+     },
+     {
+         name: 10,
+         value: 10
+     }
        ];
+        const arrowUp = 'arrow-up';
+        const arrowDown = 'arrow-down';
+        const arrowAll = 'arrow-all';
 
         $scope.getData = function () {
-            dataService.getStudents($scope.currentPage, $scope.recordsPerPage, $scope.search, $scope.sortKey, $scope.isAscSort).then(function (studentInfo) {
-                $scope.totalItems = studentInfo.RecordCount;
-                $scope.data = studentInfo.Students;
-                
-
-
+            dataService.getStudents($scope.currentPage, $scope.recordsPerPage, $scope.search, $scope.sortKey, $scope.isAscSort)
+             .then(function (studentInfo) {
+            $scope.totalItems = studentInfo.RecordCount;
+            $scope.data = studentInfo.Students;              
             }, function (response) {
                 alert("error occurred: unable to get data");
             });
         }
-       
-
         $scope.pageChanged = function () {
             $scope.getData();
         };
@@ -44,19 +49,23 @@ myApp.controller("studentController", ["$scope", "dataService","localStorageServ
             $scope.getData();
         };
 
-   
         $scope.sortClass = function (col) {
-            if ($scope.sortKey == col) {
-                if ($scope.isAscSort) {
-                    return 'arrow-up';
-                } else {
-                    return 'arrow-down';
+            if ($scope.sortKey == col)
+            {
+                if ($scope.isAscSort)
+                {
+                    return arrowUp;
                 }
-            } else {
-                return 'arrow-all';
+                else
+                {
+                    return arrowDown;
+                }
+            }
+            else 
+            {
+                return arrowAll;
             }
         };
-
 
         $scope.searchFor = function () {
             $scope.getData();
@@ -65,8 +74,7 @@ myApp.controller("studentController", ["$scope", "dataService","localStorageServ
         $scope.changePageSize = function () {
             $scope.currentPage = 1;
             $scope.getData();
-        };
-        
+        };        
         $scope.getData();        
     }]);
 

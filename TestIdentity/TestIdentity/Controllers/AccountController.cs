@@ -285,7 +285,7 @@ namespace TestIdentity.Controllers
             var user = await UserManager.FindByNameAsync(model.Email);
             if (user == null)
             {
-                // Не показывать, что пользователь не существует
+                // Do not show if the user does not exist
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
             var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
@@ -343,7 +343,7 @@ namespace TestIdentity.Controllers
                 return View();
             }
 
-            // Создание и отправка маркера
+            // Create and send token
             if (!await SignInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
             {
                 return View("Error");

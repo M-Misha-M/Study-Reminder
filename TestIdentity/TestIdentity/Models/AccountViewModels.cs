@@ -51,7 +51,7 @@ namespace TestIdentity.Models
     {
         [Required(ErrorMessage = "Email required")]
         [Display(Name = "Email")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Password required")]

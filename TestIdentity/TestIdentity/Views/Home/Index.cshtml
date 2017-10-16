@@ -27,9 +27,7 @@
                                                 class="form-control input-sm input-xsmall input-inline"
                                                 ng-model="recordsPerPage"
                                                 ng-options='option.value as option.name for option in typeOptions'
-                                                ng-change="changePageSize()">
-                                           
-                                            
+                                                ng-change="changePageSize()">                                                                                    
                                         </select>
                                     </label>
                                 </div>
@@ -54,7 +52,6 @@
                                    dataTable no-footer">
                                 <thead>
                                     <tr class="sortable" role="row">
-
                                         <th ng-click="sort('Name')" 
                                             ng-class='sortClass("Name")'>
                                               Name
@@ -65,31 +62,24 @@
                                      
                                             Last Name 
                                         </th>
-
                                         <th ng-click="sort('Email')" 
                                             ng-class='sortClass("Email")'>
                                                Email
                                         </th>
-
                                         <th ng-click="sort('BirthDate')">
                                            
                                             Birthday
                                         </th>
-
-                                        <th  ng-click="sort('RegistrationDate')">
-                                           
+                                        <th  ng-click="sort('RegistrationDate')">                                           
                                             Register date
                                         </th>
-
-                                        <th ng-click="sort('StudyDate')">
-                                            
+                                        <th ng-click="sort('StudyDate')">                                           
                                             Study date
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="i in data" class="gradeX odd">
-
                                         <td>
                                             {{i.Name}}
                                         </td>
@@ -99,20 +89,18 @@
                                         <td>
                                             <a ng-href="mailto:{{ i.Email }}" target="_blank">
                                                 {{ i.Email }}
-                                            </a>
-                                           
+                                            </a>                                           
                                         </td>
-
                                         <td>
                                             {{i.BirthDate | date : "dd.MM.y"}}
                                         </td>
 
                                         <td class="center">
-                                            {{i.RegistrationDate | date:"yyyy-MM-dd HH:mm:ss" }}
+                                            {{i.RegistrationDate|date:"yyyy-MM-dd HH:mm:ss" }}
                                         </td>
 
                                         <td class="center" ng-if ="i.StudynDate != null">
-                                            {{i.StudynDate   | date: "dd.MM.y"}}
+                                            {{i.StudynDate|date:"dd.MM.y"}}
                                         </td>
                                         <td class="center" ng-if="i.StudynDate == null">
                                             <span class="label label-sm label-warning"> Not Selected </span>

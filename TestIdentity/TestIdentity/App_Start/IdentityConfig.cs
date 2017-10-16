@@ -15,7 +15,7 @@ namespace TestIdentity
     {
         public Task SendAsync(IdentityMessage message)
         {
-            SmtpClient client = new SmtpClient();
+            var client = new SmtpClient();
             var msg = new MailMessage();
             msg.To.Add(message.Destination);
             msg.Subject = message.Subject;

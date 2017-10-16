@@ -30,10 +30,10 @@ namespace TestIdentity.Controllers
 
                 var students = personRepository.Get()
                                  .Where(x => search == null
-                                          || ((x.Name.ToLower().Contains(search)) ||
-                                              (x.LastName.ToLower().Contains(search)) ||
-                                              (x.BirthDate.ToString().ToLower().Contains(search)) ||
-                                              (x.ApplicationUser.Email.ToString().ToLower().Contains(search))))
+                                          || ((x.Name.ToLower().Contains(search)) 
+                                          || (x.LastName.ToLower().Contains(search)) 
+                                          || (x.BirthDate.ToString().ToLower().Contains(search)) 
+                                          || (x.ApplicationUser.Email.ToString().ToLower().Contains(search))))
                                  .Select(x => new PersonalInfoViewModel
                                  {
                                      Name = x.Name,
@@ -82,6 +82,4 @@ namespace TestIdentity.Controllers
             }
         }
     }
-
-
 }
