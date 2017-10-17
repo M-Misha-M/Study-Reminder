@@ -36,20 +36,12 @@
 <link href="~/Content/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />
 <!-- END THEME LAYOUT STYLES -->
 <!-- BEGIN PAGE LEVEL STYLES -->
-
 <link href="~/Content/assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL STYLES -->
 <link rel="shortcut icon" href="favicon.ico" />
 <!-- END HEAD -->
 <link href="~/Content/bootstrap-social.css" rel="stylesheet" />
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-<style>
-    .btn-facebook {
-        width: 100% !important;
-    }
-</style>
-
-
+<link href="~/Content/facebook-button.css" rel="stylesheet" />
 <body class="login">
     <!-- BEGIN LOGO -->
     <div class="logo">
@@ -92,25 +84,18 @@
                     <input type="checkbox" name="remember" value="1" />Remember
                 </label>
             </div>
-
-            <div class="create-account">
-                <p>
-                    @Html.ActionLink("Create an account", "Register")
-
-                </p>
-            </div>
         }
 
-       <hr />
         @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
 
+        <div class="create-account">
+            <p>
+                @Html.ActionLink("Create an account", "Register")
+            </p>
+        </div>
         <!-- END LOGIN FORM -->
-
     </div>
     <div class="copyright"> 2014 © Metronic. Admin Dashboard Template. </div>
-
-
-
 
     <!--[if lt IE 9]>
     <script src="~/Content/assets/global/plugins/respond.min.js"></script>
@@ -118,11 +103,7 @@
     <![endif]-->
     <!-- BEGIN CORE PLUGINS -->
     <script src="~/Content/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-
-
-
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-
     <script src="~/Content/assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
     <script src="~/Content/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
     <script src="~/Content/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
@@ -154,9 +135,8 @@
     <script src="~/Content/assets/layouts/layout/scripts/demo.min.js" type="text/javascript"></script>
     <script src="~/Content/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
     <!-- END THEME LAYOUT SCRIPTS -->
-
-
     <script src="~/Scripts/LoginValidation.js" type="text/javascript"></script>>
+
 </body>
 
 

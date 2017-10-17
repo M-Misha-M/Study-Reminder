@@ -50,7 +50,6 @@ namespace TestIdentity.Controllers
             }
         }
 
-        //
         // GET: /Account/Login
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
@@ -102,7 +101,6 @@ namespace TestIdentity.Controllers
                 }
             }
             return View(model);
-
         }
 
         //
@@ -115,7 +113,12 @@ namespace TestIdentity.Controllers
             {
                 return View("Error");
             }
-            return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
+            return View(new VerifyCodeViewModel
+            {
+                Provider = provider,
+                ReturnUrl = returnUrl,
+                RememberMe = rememberMe
+            });
         }
 
         //
@@ -137,19 +140,19 @@ namespace TestIdentity.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                {
-                  return RedirectToLocal(model.ReturnUrl);
-                }
+                    {
+                        return RedirectToLocal(model.ReturnUrl);
+                    }
                 case SignInStatus.LockedOut:
-                {
-                  return View("Lockout");
-                }
+                    {
+                        return View("Lockout");
+                    }
                 case SignInStatus.Failure:
                 default:
-                {
-                  ModelState.AddModelError(string.Empty, "Invalid code");
-                  return View(model);
-                }
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid code");
+                        return View(model);
+                    }
             }
         }
 
@@ -305,7 +308,6 @@ namespace TestIdentity.Controllers
             return View();
         }
 
-        //
         // POST: /Account/ExternalLogin
         [HttpPost]
         [AllowAnonymous]
@@ -348,7 +350,13 @@ namespace TestIdentity.Controllers
             {
                 return View("Error");
             }
-            return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+            return RedirectToAction("VerifyCode",
+                    new
+                    {
+                        Provider = model.SelectedProvider,
+                        ReturnUrl = model.ReturnUrl,
+                        RememberMe = model.RememberMe
+                    });
         }
 
         //
@@ -364,34 +372,34 @@ namespace TestIdentity.Controllers
 
             // Sign in the user with this external login provider if the user already has a login
             var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
-                switch (result)
-                {
-                    case SignInStatus.Success:
+            switch (result)
+            {
+                case SignInStatus.Success:
                     {
                         return RedirectToAction("PersonalCabinet", "Home");
                     }
-                    case SignInStatus.LockedOut:
+                case SignInStatus.LockedOut:
                     {
                         return View("Lockout");
                     }
-                    case SignInStatus.RequiresVerification:
+                case SignInStatus.RequiresVerification:
                     {
                         return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
                     }
-                    case SignInStatus.Failure: 
-                    default:
+                case SignInStatus.Failure:
+                default:
                     {
                         // If the user does not have an account, then prompt the user to create an account
                         ViewBag.ReturnUrl = returnUrl;
                         ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                        return View("ExternalLoginConfirmation", 
+                        return View("ExternalLoginConfirmation",
                                      new ExternalLoginConfirmationViewModel
                                      {
                                          Email = loginInfo.Email
                                      });
                     }
-                }
             }
+        }
 
         //
         // POST: /Account/ExternalLoginConfirmation
@@ -424,17 +432,17 @@ namespace TestIdentity.Controllers
                         return View("ExternalLoginFailure");
                     }
                     var user = new ApplicationUser
-                               {
-                                  UserName = model.Email,
-                                  Email = model.Email,
-                                  PersonalInformation = new PersonalInformation
-                                                        {
-                                                           Name = firstName,
-                                                           LastName = lastName,
-                                                           BirthDate = birthDate,
-                                                           RegistrationDate = DateTime.UtcNow 
-                                                        }
-                              };
+                    {
+                        UserName = model.Email,
+                        Email = model.Email,
+                        PersonalInformation = new PersonalInformation
+                        {
+                            Name = firstName,
+                            LastName = lastName,
+                            BirthDate = birthDate,
+                            RegistrationDate = DateTime.UtcNow
+                        }
+                    };
                     var result = await UserManager.CreateAsync(user);
                     if (result.Succeeded)
                     {

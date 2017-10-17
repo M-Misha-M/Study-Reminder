@@ -1,49 +1,36 @@
 ﻿@model TestIdentity.Models.RegisterViewModel
-    @{ 
-
-        Layout = null;
-
-    }
+@{
+    Layout = null;
+}
 <head>
- <!-- BEGIN GLOBAL MANDATORY STYLES -->
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
-<link href="~/Content/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-<link href="~/Content/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-<link href="~/Content/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<link href="~/Content/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
-<link href="~/Content/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
-<!-- END GLOBAL MANDATORY STYLES -->
-<!-- BEGIN PAGE LEVEL PLUGINS -->
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
     <link href="~/Content/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
-<!-- END PAGE LEVEL PLUGINS -->
-<!-- BEGIN THEME GLOBAL STYLES -->
-<link href="~/Content/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
-<link href="~/Content/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
-<!-- END THEME GLOBAL STYLES -->
-<!-- BEGIN PAGE LEVEL STYLES -->
-<link href="~/Content/assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
-<!-- END PAGE LEVEL STYLES -->
-<!-- BEGIN THEME LAYOUT STYLES -->
-<!-- END THEME LAYOUT STYLES -->
-<link rel="shortcut icon" href="favicon.ico" /> 
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN THEME GLOBAL STYLES -->
+    <link href="~/Content/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+    <link href="~/Content/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+    <!-- END THEME GLOBAL STYLES -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link href="~/Content/assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL STYLES -->
+    <!-- BEGIN THEME LAYOUT STYLES -->
+    <!-- END THEME LAYOUT STYLES -->
+    <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <!-- END HEAD -->
 @section styles {}
-<style>
-    #signupForm {
-		width: 670px;
-	}
-    #signupForm label.error {
-		margin-left: 10px;
-		width: auto;
-		display: inline;
-	}
-</style>
-
+<link href="~/Content/register-form.css" rel="stylesheet" />
 <body class="login">
- 
     <div class="logo">
         <a href="index.html">
             <img src="~/Content/assets/pages/img/logo-big.png" alt="" />
@@ -53,24 +40,17 @@
         @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "register-form", role = "form", @id = "registerForm", style = "display:block" }))
         {
             @Html.AntiForgeryToken()
-
             <hr />
             @Html.ValidationSummary("", new { @class = "text-danger" })
 
             <h3 class="font-green">Sign Up</h3>
             <p class="hint"> Enter your personal details below: </p>
-
-
             @*<label class="control-label visible-ie8 visible-ie9">Username</label>*@
-
             <div class="form-group">
                 @Html.LabelFor(m => m.Name, new { @class = "control-label visible-ie8 visible-ie9" })
                 @Html.TextBoxFor(m => m.Name, new { @class = "form-control placeholder-no-fix", placeholder = "Name", @id = "Name" })
                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
-
-
-
             <div class="form-group">
                 @Html.LabelFor(m => m.LastName, new { @class = "control-label visible-ie8 visible-ie9" })
                 @Html.TextBoxFor(m => m.LastName, new { @class = "form-control placeholder-no-fix", placeholder = "Lastname", @id = "lastname" })
@@ -78,7 +58,6 @@
             </div>
 
             <div class="form-group">
-
                 @Html.TextBoxFor(m => m.Email, new { @class = "form-control placeholder-no-fix", placeholder = "Email" })
                 @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
             </div>
@@ -93,30 +72,36 @@
                 @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control placeholder-no-fix", placeholder = "Re-type Password", @id = "confirm_password" })
                 @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
             </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">Start With Years</label>
 
+                <div class="input-group  date date-picker" data-date-format="dd-mm-yyyy" data-date-viewmode="years">
+                    @Html.TextBoxFor(m => m.BirthDate, new { @class = "form-control placeholder-no-fix" })
+                    @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
 
-
-                <div class="form-group">
-                    <label class="control-label visible-ie8 visible-ie9">Start With Years</label>
-                    
-                        <div class="input-group  date date-picker"  data-date-format="dd-mm-yyyy" data-date-viewmode="years">
-                            @Html.TextBoxFor(m => m.BirthDate, new { @class = "form-control placeholder-no-fix" })
-                            @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
-
-                            <span class="input-group-btn">
-                                <button class="btn btn-md default" type="button">
-                                    <i class="fa fa-calendar"></i>
-                                </button>
-                            </span>
-                        </div>
-                        <!-- /input-group -->
-                        <span class="help-block"> Select birthday date </span>                   
-                </div>               
-                    <div class="form-actions">
-                        <button type="submit" id="submit-btn" class="btn btn-success uppercase pull-right" disabled="disabled">Submit</button>
-                    </div>
-
-
+                    <span class="input-group-btn">
+                        <button class="btn btn-md default" type="button">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </span>
+                </div>
+                <!-- /input-group -->
+                <span class="help-block"> Select birthday date </span>
+            </div>
+                <div class="form-actions">
+                    <button type="button"
+                            id="register-back-btn"
+                            class="btn btn-default"
+                            onclick="window.location.href='/Account/Login'">
+                        Back
+                    </button>
+                    <button type="submit"
+                            id="submit-btn"
+                            class="btn btn-success uppercase pull-right"
+                            disabled="disabled">
+                        Submit
+                    </button>
+                </div>
         }
     </div>
 

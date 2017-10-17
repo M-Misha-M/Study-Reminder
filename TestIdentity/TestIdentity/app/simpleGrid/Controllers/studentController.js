@@ -11,20 +11,11 @@ myApp.controller("studentController", ["$scope", "dataService",
         // column to sort
         $scope.sortKey = 'Name';
         $scope.isAscSort = true;
-        $scope.typeOptions =
-       [{
-           name: 5,
-           value: 5
-       },
-     {
-         name: 8,
-         value: 8
-     },
-     {
-         name: 10,
-         value: 10
-     }
-       ];
+        $scope.typeOptions = [
+            { name: 5, value: 5 },
+            { name: 8, value: 8 },
+            { name: 10, value: 10 }
+        ];
         const arrowUp = 'arrow-up';
         const arrowDown = 'arrow-down';
         const arrowAll = 'arrow-all';
@@ -32,20 +23,21 @@ myApp.controller("studentController", ["$scope", "dataService",
         $scope.getData = function () {
             dataService.getStudents($scope.currentPage, $scope.recordsPerPage, $scope.search, $scope.sortKey, $scope.isAscSort)
              .then(function (studentInfo) {
-            $scope.totalItems = studentInfo.RecordCount;
-            $scope.data = studentInfo.Students;              
-            }, function (response) {
-                alert("error occurred: unable to get data");
-            });
+                 $scope.totalItems = studentInfo.RecordCount;
+                 $scope.data = studentInfo.Students;
+             }, function (response) {
+                 alert("error occurred: unable to get data");
+             });
         }
+
         $scope.pageChanged = function () {
             $scope.getData();
         };
 
-        $scope.sort = function (col) {                    
+        $scope.sort = function (col) {
             $scope.sortKey = col;
             $scope.isAscSort = !$scope.isAscSort;
-            
+
             $scope.getData();
         };
 
@@ -54,16 +46,16 @@ myApp.controller("studentController", ["$scope", "dataService",
             {
                 if ($scope.isAscSort)
                 {
-                    return arrowUp;
+                  return arrowUp;
                 }
                 else
                 {
-                    return arrowDown;
+                  return arrowDown;
                 }
             }
-            else 
+            else
             {
-                return arrowAll;
+              return arrowAll;
             }
         };
 
@@ -74,8 +66,8 @@ myApp.controller("studentController", ["$scope", "dataService",
         $scope.changePageSize = function () {
             $scope.currentPage = 1;
             $scope.getData();
-        };        
-        $scope.getData();        
+        };
+        $scope.getData();
     }]);
 
 

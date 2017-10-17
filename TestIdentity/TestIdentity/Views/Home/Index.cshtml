@@ -58,16 +58,14 @@
                                         </th>
 
                                         <th ng-click="sort('LastName')"
-                                            ng-class='sortClass("LastName")'>
-                                     
+                                            ng-class='sortClass("LastName")'>                                    
                                             Last Name 
                                         </th>
                                         <th ng-click="sort('Email')" 
                                             ng-class='sortClass("Email")'>
                                                Email
                                         </th>
-                                        <th ng-click="sort('BirthDate')">
-                                           
+                                        <th ng-click="sort('BirthDate')">                                         
                                             Birthday
                                         </th>
                                         <th  ng-click="sort('RegistrationDate')">                                           
@@ -92,7 +90,7 @@
                                             </a>                                           
                                         </td>
                                         <td>
-                                            {{i.BirthDate | date : "dd.MM.y"}}
+                                            {{i.BirthDate|date:"dd.MM.y"}}
                                         </td>
 
                                         <td class="center">
@@ -109,7 +107,6 @@
                                 </tbody>
                             </table>
                         </div>
-
                         <div class="row">
                             <div class="col-md-5 col-sm-5">
                                 <div class="dataTables_info" 
@@ -125,14 +122,13 @@
                                     data-max-size="NumberOfPageButtons" class="pagination-large" 
                                     data-boundary-links="true" data-rotate="false" 
                                     data-items-per-page="recordsPerPage"></ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-      
+        </div>  
     </div>
     @section scripts{
        
@@ -142,7 +138,7 @@
 <script src="~/Content/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 
-         <!-- BEGIN PAGE LEVEL SCRIPTS -->
+ <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="~/Content/assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
   }

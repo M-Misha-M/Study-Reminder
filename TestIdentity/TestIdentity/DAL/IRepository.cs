@@ -10,11 +10,8 @@ namespace TestIdentity.DAL
     public interface IRepository<T> : IDisposable
         where T : class
     {
-        IQueryable<T> Get();
-       
+        IQueryable<T> Get();       
         void Create(PersonalInformation item);
-        void Update(PersonalInformation personalInformation); 
-        void Delete(int id); 
-        void Save(); 
+        void Update(T personalInformation);       
     }
 }

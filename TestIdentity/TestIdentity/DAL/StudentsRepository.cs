@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using TestIdentity.Models;
+using System.Data.Entity;
 
 namespace TestIdentity.DAL
 {
@@ -13,11 +14,6 @@ namespace TestIdentity.DAL
             db.SaveChanges();
         }
 
-        public void Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Dispose()
         {
             db.Dispose();
@@ -28,15 +24,10 @@ namespace TestIdentity.DAL
             return db.Set<T>();
         }
 
-        public void Save() 
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(PersonalInformation personalInformation)
-        {
-            db.PersonalInformation.Attach(personalInformation);
-            db.Entry(personalInformation).Property(x => x.StudyDate).IsModified = true;
+        public void Update(T personalInformation)
+        {       
+            db.Set<T>().Attach(personalInformation);
+            db.Entry(personalInformation).State = EntityState.Modified;
             db.SaveChanges();
         }
     }

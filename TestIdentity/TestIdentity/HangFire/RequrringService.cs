@@ -11,9 +11,9 @@ namespace TestIdentity.HangFire
     {
         IRepository<PersonalInformation> repository;
 
-        public RequrringService(IRepository<PersonalInformation> repo)
+        public RequrringService(IRepository<PersonalInformation> repository)
         {
-            repository = repo;
+            this.repository = repository;
         }
 
         public void SendEmail(string email, int day)
@@ -36,13 +36,13 @@ namespace TestIdentity.HangFire
             var oneWeekFromNow = DateTime.UtcNow.AddDays(weekDays).Date;
             var oneDayFromNow = DateTime.UtcNow.AddDays(oneDay).Date;
             var user = repository.Get()
-                                  .Where(x => (x.StudyDate == oneMonthFromNow) 
-                                           || (x.StudyDate == oneWeekFromNow) 
-                                           || (x.StudyDate == oneDayFromNow))
+                                 .Where(x => (x.StudyDate == oneMonthFromNow) 
+                                          || (x.StudyDate == oneWeekFromNow) 
+                                          || (x.StudyDate == oneDayFromNow))
                                   .ToList();
             user.ForEach(u => 
             {
-                SendEmail(u.ApplicationUser.Email, (int)(u.StudyDate.Value.Date - DateTime.UtcNow.Date).TotalDays);
+               SendEmail(u.ApplicationUser.Email, (int)(u.StudyDate.Value.Date - DateTime.UtcNow.Date).TotalDays);
             });
         }
     }

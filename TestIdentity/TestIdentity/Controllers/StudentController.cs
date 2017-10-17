@@ -10,14 +10,7 @@ using TestIdentity.DAL;
 namespace TestIdentity.Controllers
 {
     public class StudentController : ApiController
-    {
-        IRepository<PersonalInformation> personRepository;
-
-        public StudentController()
-        {
-            personRepository = new StudentsRepository<PersonalInformation>();
-        }
-
+    {      
         public StudentContainer GetAllStudents(int currentPage, int recordsPerPage, string search, string sortKey, bool isAscSort)
         {
             int pageNumber = currentPage;
@@ -26,54 +19,57 @@ namespace TestIdentity.Controllers
 
             try
             {
-                var totalNumberOfRecords = personRepository.Get().Count();
-
-                var students = personRepository.Get()
-                                 .Where(x => search == null
-                                          || ((x.Name.ToLower().Contains(search)) 
-                                          || (x.LastName.ToLower().Contains(search)) 
-                                          || (x.BirthDate.ToString().ToLower().Contains(search)) 
-                                          || (x.ApplicationUser.Email.ToString().ToLower().Contains(search))))
-                                 .Select(x => new PersonalInfoViewModel
-                                 {
-                                     Name = x.Name,
-                                     LastName = x.LastName,
-                                     BirthDate = x.BirthDate,
-                                     Email = x.ApplicationUser.Email,
-                                     RegistrationDate = x.RegistrationDate,
-                                     StudynDate = x.StudyDate
-                                 });
-
-                switch (sortKey)
+                using (var personRepository = new StudentsRepository<PersonalInformation>())
                 {
-                    case "Name":
-                        students = (isAscSort)
-                                 ? students.OrderBy(x => x.Name)
-                                 : students.OrderByDescending(x => x.Name);
-                         break;
+                    var totalNumberOfRecords = personRepository.Get().Count();
 
-                    case "LastName":
-                        students = (isAscSort)
-                                 ? students.OrderBy(x => x.LastName)
-                                 : students.OrderByDescending(x => x.LastName);
-                        break;
+                    var students = personRepository.Get()
+                                     .Where(x => search == null
+                                              || ((x.Name.ToLower().Contains(search))
+                                              || (x.LastName.ToLower().Contains(search))
+                                              || (x.BirthDate.ToString().ToLower().Contains(search))
+                                              || (x.ApplicationUser.Email.ToString().ToLower().Contains(search))))
+                                     .Select(x => new PersonalInfoViewModel
+                                     {
+                                         Name = x.Name,
+                                         LastName = x.LastName,
+                                         BirthDate = x.BirthDate,
+                                         Email = x.ApplicationUser.Email,
+                                         RegistrationDate = x.RegistrationDate,
+                                         StudynDate = x.StudyDate
+                                     });
 
-                    case "Email":
-                        students = (isAscSort)
-                                 ? students.OrderBy(x => x.Email)
-                                 : students.OrderByDescending(x => x.Email);
-                        break;
+                    switch (sortKey)
+                    {
+                        case "Name":
+                            students = (isAscSort)
+                                     ? students.OrderBy(x => x.Name)
+                                     : students.OrderByDescending(x => x.Name);
+                            break;
+
+                        case "LastName":
+                            students = (isAscSort)
+                                     ? students.OrderBy(x => x.LastName)
+                                     : students.OrderByDescending(x => x.LastName);
+                            break;
+
+                        case "Email":
+                            students = (isAscSort)
+                                     ? students.OrderBy(x => x.Email)
+                                     : students.OrderByDescending(x => x.Email);
+                            break;
+                    }
+
+                    students = students
+                               .Skip(begin)
+                               .Take(pageSize);
+
+                    return new StudentContainer
+                    {
+                        Students = students.ToList(),
+                        RecordCount = totalNumberOfRecords
+                    };
                 }
-
-                students = students
-                           .Skip(begin)
-                           .Take(pageSize);
-
-                return new StudentContainer
-                {
-                    Students = students.ToList(),
-                    RecordCount = totalNumberOfRecords
-                };
 
             }
             catch (Exception exception)
