@@ -67,7 +67,7 @@ namespace TestIdentity.Controllers
             messageDictionary.Add(ManageMessageId.AddPhoneSuccess, ADDPHONE_SUCCESS);
             messageDictionary.Add(ManageMessageId.RemovePhoneSuccess, REMOVEPHONE_SUCESS);
 
-            if (message == null)
+            if (message == null || !messageDictionary.ContainsKey(message.Value))
             {
                 ViewBag.StatusMessage = string.Empty;
             }

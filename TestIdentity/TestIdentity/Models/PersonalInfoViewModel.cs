@@ -8,7 +8,7 @@ namespace TestIdentity.Models
         public string LastName { get; set; }
         public DateTime? BirthDate { get; set; }
         public DateTime? RegistrationDate { get; set; }
-        public DateTime? StudynDate { get; set; }
+        public DateTime? StudyDate { get; set; }
         public string Email { get; set; }
     } 
 }

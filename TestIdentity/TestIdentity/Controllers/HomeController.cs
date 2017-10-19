@@ -17,20 +17,22 @@ namespace TestIdentity.Controllers
         }
 
         [Authorize(Roles = "user")]
-        public ActionResult PersonalCabinet()
+        public ActionResult PersonalCabinet(PersonalInfoViewModel model)
         {
             using (var personRepository = new StudentsRepository<PersonalInformation>())
             {
                 var id = User.Identity.GetUserId();
-                var email = User.Identity.GetUserName();
                 var person = personRepository.Get().FirstOrDefault(x => x.UserId == id);
-
-                return View(person);
+                model.Name = person.Name;
+                model.LastName = person.LastName;
+                model.BirthDate = person.BirthDate;
+                model.StudyDate = person.StudyDate;
             }
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult AddDateToDatabase(StudyDateViewModel model)
+        public ActionResult AddDateToDatabase(PersonalInfoViewModel model)
         {
             var studyDate = model.StudyDate;
             if (ModelState.IsValid)
@@ -44,14 +46,12 @@ namespace TestIdentity.Controllers
 
                     changeStudyDate.StudyDate = studyDate;
                     personRepository.Update(changeStudyDate);
-                    TempData["message"] = $"Well done. Your study date is {studyDate.Value.ToShortDateString()}. Don't forget to check email ";
+                    TempData["message"] = $"Well done. Your study date is {studyDate.Value.ToShortDateString()}." +
+                                           "Don't forget to check email";
+                    return RedirectToAction("PersonalCabinet");
                 }
             }
-            else
-            {
-                return View(model);
-            }
-            return RedirectToAction("PersonalCabinet");
+            return View(model);
         }
     }
 }

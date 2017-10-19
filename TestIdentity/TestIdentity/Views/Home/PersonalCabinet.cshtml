@@ -1,5 +1,5 @@
-﻿@using TestIdentity.Models
-@model PersonalInformation
+﻿@using TestIdentity.Models;
+@model PersonalInfoViewModel
 
 @{
     ViewBag.Title = "About";
@@ -83,7 +83,7 @@
                                 </div>
                             </div>
                             <div class="portlet-body">
-                                @Html.Partial("AddDateToDatabase", new StudyDateViewModel())
+                                @Html.Partial("AddDateToDatabase")
                                 <br />
                                 @if (TempData["message"] != null)
                                 {

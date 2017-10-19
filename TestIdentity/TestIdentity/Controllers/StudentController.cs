@@ -36,7 +36,7 @@ namespace TestIdentity.Controllers
                                          BirthDate = x.BirthDate,
                                          Email = x.ApplicationUser.Email,
                                          RegistrationDate = x.RegistrationDate,
-                                         StudynDate = x.StudyDate
+                                         StudyDate = x.StudyDate
                                      });
 
                     switch (sortKey)
