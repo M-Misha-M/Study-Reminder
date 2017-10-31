@@ -66,7 +66,6 @@ namespace TestIdentity.Models
     public class RegisterViewModel
     {
         [Required(ErrorMessage ="Email required")]
-
         [RegularExpression(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$", ErrorMessage = "Email  not valid")]
         [Display(Name = "Email Adress")]
         public string Email { get; set; }
@@ -86,13 +85,11 @@ namespace TestIdentity.Models
         public string Name { get; set; }
         [Required(ErrorMessage ="Field LastName required")]
         public string LastName { get; set; }
+
         [Required]
         [DataType(DataType.DateTime)]
-        public DateTime? BirthDate { get; set; }
-
-       
-        public DateTime? RegistrationDate { get; set; }
-       
+        public DateTime? BirthDate { get; set; }      
+        public DateTime? RegistrationDate { get; set; }       
         public DateTime? StudynDate { get; set; }
     }
 

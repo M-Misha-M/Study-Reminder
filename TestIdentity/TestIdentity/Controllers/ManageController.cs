@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -7,7 +6,6 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using TestIdentity.Models;
-using TestIdentity.DAL;
 using System.Collections.Generic;
 
 namespace TestIdentity.Controllers
@@ -17,6 +15,10 @@ namespace TestIdentity.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+
+        public ManageController()
+        {
+        }
 
         public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {

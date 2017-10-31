@@ -20,7 +20,7 @@ namespace TestIdentity.HangFire
         {            
             var message = new MailMessage();
             message.Subject = "Start study";
-            message.Body = $"Your study start will begin through  {day} day(s)";
+            message.Body = $"<h3>Your study start will begin through  <b>{day}</b> day(s)</h3>";
             message.IsBodyHtml = true;
             message.To.Add(email);           
             SmtpClient smtp = new SmtpClient();

@@ -1,8 +1,7 @@
 ﻿$(document).ready(function () {
     $("#dateForm").submit(function (e) {
         var studyDate = $("#StudyDate").val();
-        if (studyDate == "")
-        {
+        if (studyDate == "") {
             e.preventDefault();
             $("#formAlert").removeClass("hide");
             $("#formAlert").slideDown(400);
