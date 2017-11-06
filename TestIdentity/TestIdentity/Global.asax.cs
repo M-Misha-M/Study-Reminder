@@ -9,15 +9,15 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using TestIdentity.Models;
 
+
 namespace TestIdentity
 {
     public class MvcApplication : System.Web.HttpApplication
     {
         protected void Application_Start()
         {
-          // Database.SetInitializer<ApplicationDbContext>(new AppDbInitializer());
-
-
+            // Database.SetInitializer<ApplicationDbContext>(new AppDbInitializer());
+            
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             GlobalConfiguration.Configure(WebApiConfig.Register);

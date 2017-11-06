@@ -48,6 +48,14 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Autofac, Version=4.6.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.6.1\lib\net45\Autofac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Hangfire.Autofac, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.Autofac.2.3.1\lib\net45\Hangfire.Autofac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Hangfire.Core, Version=1.6.17.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hangfire.Core.1.6.17\lib\net45\Hangfire.Core.dll</HintPath>
       <Private>True</Private>
@@ -247,6 +255,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="HangFire\AutofacStandardModule.cs" />
+    <Compile Include="HangFire\HangfireDependency.cs" />
+    <Compile Include="HangFire\IRequrringService.cs" />
+    <Compile Include="HangFire\ReccuringJobInitializer.cs" />
+    <Compile Include="HangFire\RequrringService.cs" />
     <Compile Include="Migrations\201709121853282_Code.cs" />
     <Compile Include="Migrations\201709121853282_Code.Designer.cs">
       <DependentUpon>201709121853282_Code.cs</DependentUpon>
@@ -259,20 +272,29 @@
     <Compile Include="Migrations\201709141320423_changeAgeField2.Designer.cs">
       <DependentUpon>201709141320423_changeAgeField2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710031101117_correctStudyDateFieldName.cs" />
+    <Compile Include="Migrations\201710031101117_correctStudyDateFieldName.Designer.cs">
+      <DependentUpon>201710031101117_correctStudyDateFieldName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AppDbInitializer.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\PersonalInfoModel.cs" />
+    <Compile Include="Models\PersonalInfoViewModel.cs" />
     <Compile Include="Models\PersonalInformation.cs" />
+    <Compile Include="Models\StudentContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\app.js" />
-    <Content Include="app\simpleGrid\Service\dataService.js" />
-    <Content Include="app\simpleGrid\simpleGrid.js" />
+    <Content Include="app\simpleGrid\services\dataService.js" />
+    <Content Include="app\simpleGrid\controllers\studentController.js" />
+    <Content Include="App_Data\aspnet-TestIdentity-20170912045124.mdf" />
+    <Content Include="App_Data\aspnet-TestIdentity-20170912045124_log.ldf">
+      <DependentUpon>aspnet-TestIdentity-20170912045124.mdf</DependentUpon>
+    </Content>
     <Content Include="Content\jquery.dataTables.min.css" />
     <Content Include="Content\assets\apps\css\inbox.css" />
     <Content Include="Content\assets\apps\css\inbox.min.css" />
@@ -6671,7 +6693,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\PersonalCabinet.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
@@ -6699,7 +6721,6 @@
     <Content Include="Views\Home\AddDateToDatabase.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Content\assets\apps\img\" />
     <Folder Include="Content\assets\global\plugins\angularjs\plugins\angular-file-upload\uploads\" />
     <Folder Include="images\" />
@@ -6719,6 +6740,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709141320423_changeAgeField2.resx">
       <DependentUpon>201709141320423_changeAgeField2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710031101117_correctStudyDateFieldName.resx">
+      <DependentUpon>201710031101117_correctStudyDateFieldName.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

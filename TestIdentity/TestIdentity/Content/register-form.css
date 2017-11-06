@@ -1,0 +1,13 @@
+﻿#signupForm {
+    width: 670px;
+}
+
+#signupForm label.error {
+        margin-left: 10px;
+        width: auto;
+        display: inline;
+    }
+
+.datepicker {
+    top: 283px !important;
+}
