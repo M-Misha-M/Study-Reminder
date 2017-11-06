@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -52,17 +50,16 @@ namespace TestIdentity.Controllers
             }
         }
 
-        //
         // GET: /Account/Login
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
-         
+
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("About", "Home");
+                return RedirectToAction("PersonalCabinet", "Home");
             }
-            ViewBag.ReturnUrl = returnUrl ?? Url.Action("About", "Home");
+            ViewBag.ReturnUrl = returnUrl ?? Url.Action("PersonalCabinet", "Home");
 
             return View();
         }
@@ -74,54 +71,54 @@ namespace TestIdentity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-          
-
 
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindAsync(model.Email, model.Password);
-                if (user!= null)
+                if (user != null)
                 {
-                    if(user.EmailConfirmed)
+                    if (user.EmailConfirmed)
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         if (UserManager.IsInRole(user.Id, "admin"))
                         {
                             return RedirectToAction("Index", "Home");
                         }
-                       
+
                         if (UserManager.IsInRole(user.Id, "user"))
                         {
-                            return RedirectToAction("About", "Home");
+                            return RedirectToAction("PersonalCabinet", "Home");
                         }
-                    }else
-                    {
-                      ModelState.AddModelError("", "Email is not confirmed.");
                     }
-
-                   
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Email is not confirmed.");
+                    }
                 }
                 else
                 {
-                  ModelState.AddModelError("", "Invalid login or password");
+                    ModelState.AddModelError(string.Empty, "Invalid login or password");
                 }
             }
             return View(model);
-            
         }
-         
-    
+
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
-            // Требовать предварительный вход пользователя с помощью имени пользователя и пароля или внешнего имени входа
+            // Sign in the user with this external login provider if the user already has a login
             if (!await SignInManager.HasBeenVerifiedAsync())
             {
                 return View("Error");
             }
-            return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
+            return View(new VerifyCodeViewModel
+            {
+                Provider = provider,
+                ReturnUrl = returnUrl,
+                RememberMe = rememberMe
+            });
         }
 
         //
@@ -136,21 +133,26 @@ namespace TestIdentity.Controllers
                 return View(model);
             }
 
-            // Приведенный ниже код защищает от атак методом подбора, направленных на двухфакторные коды. 
-            // Если пользователь введет неправильные коды за указанное время, его учетная запись 
-            // будет заблокирована на заданный период. 
-            // Параметры блокирования учетных записей можно настроить в IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            // The following code protects for brute force attacks against the two factor codes 
+            // If a user enters incorrect codes for a specified amount of time then the user account 
+            // will be blocked for the specified period.
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(model.ReturnUrl);
+                    {
+                        return RedirectToLocal(model.ReturnUrl);
+                    }
                 case SignInStatus.LockedOut:
-                    return View("Lockout");
+                    {
+                        return View("Lockout");
+                    }
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Неправильный код.");
-                    return View(model);
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid code");
+                        return View(model);
+                    }
             }
         }
 
@@ -165,9 +167,9 @@ namespace TestIdentity.Controllers
             }
             else
             {
-                return RedirectToAction("About" , "Home");
+                return RedirectToAction("PersonalCabinet", "Home");
             }
-            
+
         }
 
         //
@@ -175,14 +177,26 @@ namespace TestIdentity.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        
+
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email , PersonalInformation = new PersonalInformation { Name = model.Name , LastName = model.LastName , Age  = model.Age , RegistrationDate = DateTime.Now , StudynDate = model.StudynDate } };
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    PersonalInformation = new PersonalInformation
+                    {
+                        Name = model.Name,
+                        LastName = model.LastName,
+                        BirthDate = model.BirthDate,
+                        RegistrationDate = DateTime.UtcNow,
+                        StudyDate = model.StudynDate
+                    }
+                };
                 var result = await UserManager.CreateAsync(user, model.Password);
-              
+
                 if (result.Succeeded)
                 {
                     var code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -190,20 +204,15 @@ namespace TestIdentity.Controllers
                      protocol: Request.Url.Scheme);
 
 
-                    await UserManager.SendEmailAsync(user.Id, "Confirmation Email",
-                      "To finish registration please click:: <a href=\""
-                                                      + callbackUrl + "\">Finish Registration</a>");
+                    await UserManager.SendEmailAsync(user.Id, "Confirmation email",
+                       "To finish registration please follow the link:: "+
+                       "<a href=" + callbackUrl + ">"+ "Finish registration</a>");
                     await UserManager.AddToRoleAsync(user.Id, "user");
-                    // await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-
                     return View("DisplayEmail");
-                   
+
                 }
                 AddErrors(result);
             }
-            
-
-          
             return View(model);
         }
 
@@ -240,19 +249,12 @@ namespace TestIdentity.Controllers
                 var user = await UserManager.FindByNameAsync(model.Email);
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
-                    // Не показывать, что пользователь не существует или не подтвержден
+                    // Do not show that the user does not exist or is not verified
                     return View("ForgotPasswordConfirmation");
                 }
-
-                // Дополнительные сведения о том, как включить подтверждение учетной записи и сброс пароля, см. по адресу: http://go.microsoft.com/fwlink/?LinkID=320771
-                // Отправка сообщения электронной почты с этой ссылкой
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Сброс пароля", "Сбросьте ваш пароль, щелкнув <a href=\"" + callbackUrl + "\">здесь</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
-            // Появление этого сообщения означает наличие ошибки; повторное отображение формы
+            // Something go wrong and we get an error; show our form again
             return View(model);
         }
 
@@ -286,7 +288,7 @@ namespace TestIdentity.Controllers
             var user = await UserManager.FindByNameAsync(model.Email);
             if (user == null)
             {
-                // Не показывать, что пользователь не существует
+                // Do not show if the user does not exist
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
             var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
@@ -306,7 +308,6 @@ namespace TestIdentity.Controllers
             return View();
         }
 
-        //
         // POST: /Account/ExternalLogin
         [HttpPost]
         [AllowAnonymous]
@@ -344,12 +345,18 @@ namespace TestIdentity.Controllers
                 return View();
             }
 
-            // Создание и отправка маркера
+            // Create and send token
             if (!await SignInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
             {
                 return View("Error");
             }
-            return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+            return RedirectToAction("VerifyCode",
+                    new
+                    {
+                        Provider = model.SelectedProvider,
+                        ReturnUrl = model.ReturnUrl,
+                        RememberMe = model.RememberMe
+                    });
         }
 
         //
@@ -368,17 +375,29 @@ namespace TestIdentity.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToAction("About" , "Home");
+                    {
+                        return RedirectToAction("PersonalCabinet", "Home");
+                    }
                 case SignInStatus.LockedOut:
-                    return View("Lockout");
+                    {
+                        return View("Lockout");
+                    }
                 case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
+                    {
+                        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
+                    }
                 case SignInStatus.Failure:
                 default:
-                    // If the user does not have an account, then prompt the user to create an account
-                    ViewBag.ReturnUrl = returnUrl;
-                    ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
+                    {
+                        // If the user does not have an account, then prompt the user to create an account
+                        ViewBag.ReturnUrl = returnUrl;
+                        ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
+                        return View("ExternalLoginConfirmation",
+                                     new ExternalLoginConfirmationViewModel
+                                     {
+                                         Email = loginInfo.Email
+                                     });
+                    }
             }
         }
 
@@ -389,6 +408,9 @@ namespace TestIdentity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
+            const string FirstName = "urn:facebook:first_name";
+            const string LastName = "urn:facebook:last_name";
+            const string BirthdayFacebook = "urn:facebook:birthday";
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Manage");
@@ -396,30 +418,44 @@ namespace TestIdentity.Controllers
 
             if (ModelState.IsValid)
             {
-                // Get the information about the user from the external login provider
                 var info = await AuthenticationManager.GetExternalLoginInfoAsync();
-                var firstName = info.ExternalIdentity.Claims.First(c => c.Type == "urn:facebook:first_name").Value;
-                var lastName = info.ExternalIdentity.Claims.First(c => c.Type == "urn:facebook:last_name").Value;
-                var birthday = info.ExternalIdentity.Claims.First(c => c.Type == "urn:facebook:birthday").Value;
+                var facebookClaims = info.ExternalIdentity.Claims;
+                if (facebookClaims != null)
+                {
+                    var firstName = facebookClaims.First(c => c.Type.Equals(FirstName)).Value;
+                    var lastName = facebookClaims.First(c => c.Type.Equals(LastName)).Value;
+                    var birthday = facebookClaims.First(c => c.Type.Equals(BirthdayFacebook)).Value;
 
-                DateTime d = DateTime.Parse(birthday);
-                if (info == null)
-                {
-                    return View("ExternalLoginFailure");
-                }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email , PersonalInformation = new PersonalInformation {Name = firstName , LastName = lastName ,Age = d ,  RegistrationDate = DateTime.Now  } };
-                var result = await UserManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await UserManager.AddLoginAsync(user.Id, info.Login);
+                    DateTime birthDate = DateTime.Parse(birthday);
+                    if (info == null)
+                    {
+                        return View("ExternalLoginFailure");
+                    }
+                    var user = new ApplicationUser
+                    {
+                        UserName = model.Email,
+                        Email = model.Email,
+                        PersonalInformation = new PersonalInformation
+                        {
+                            Name = firstName,
+                            LastName = lastName,
+                            BirthDate = birthDate,
+                            RegistrationDate = DateTime.UtcNow
+                        }
+                    };
+                    var result = await UserManager.CreateAsync(user);
                     if (result.Succeeded)
                     {
-                        await UserManager.AddToRoleAsync(user.Id, "user");
-                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                        return RedirectToLocal(returnUrl);
+                        result = await UserManager.AddLoginAsync(user.Id, info.Login);
+                        if (result.Succeeded)
+                        {
+                            await UserManager.AddToRoleAsync(user.Id, "user");
+                            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                            return RedirectToLocal(returnUrl);
+                        }
                     }
+                    AddErrors(result);
                 }
-                AddErrors(result);
             }
 
             ViewBag.ReturnUrl = returnUrl;
@@ -464,8 +500,8 @@ namespace TestIdentity.Controllers
             base.Dispose(disposing);
         }
 
-        #region Вспомогательные приложения
-        // Используется для защиты от XSRF-атак при добавлении внешних имен входа
+        #region Helpers
+        // Used to protect from XSRF attacks when adding external login names
         private const string XsrfKey = "XsrfId";
 
         private IAuthenticationManager AuthenticationManager

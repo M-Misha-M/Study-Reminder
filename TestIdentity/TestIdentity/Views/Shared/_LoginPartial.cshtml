@@ -3,21 +3,31 @@
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
-    @Html.AntiForgeryToken()
-
-        <div class="top-menu"></div>
-    <ul class="nav navbar-nav pull-right">
-        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-
-
-
-
-        </li>
-<li>
-            @Html.ActionLink("Hello, " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
-        </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log out</a></li>
-    </ul>
+        @Html.AntiForgeryToken()
+        <div class="top-menu">
+            <ul class="nav navbar-nav pull-right">
+                <li class="dropdown dropdown-user">
+                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                        <img alt="" class="img-circle" src="~/Content/assets/layouts/layout/img/avatar3_small.jpg" />
+                        <span class="username username-hide-on-mobile"> @User.Identity.GetUserName() </span>
+                        <i class="fa fa-angle-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-default">
+                        <li>
+                            <a href="/Manage/Index">
+                                <i class="icon-user"></i> My Profile
+                            </a>
+                        </li>
+                        <li class="divider"> </li>
+                        <li>
+                            <a href="javascript:document.getElementById('logoutForm').submit()">
+                                <i class="icon-key"></i> Log Out
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>      
     }
 }
 else

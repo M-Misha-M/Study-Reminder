@@ -34,7 +34,7 @@ $(document).ready(function () {
                 myCustomRule: true
             },
 
-            Age: {
+            BirthDate: {
                 dateFormat: true
             }
 
