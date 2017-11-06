@@ -4,7 +4,8 @@
 {
 
     <div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
-        @Html.TextBoxFor(m => m.StudyDate, new { @class = "form-control", @Value = Model.StudyDate.Value.ToString("d") })
+        
+        @Html.TextBoxFor(m => m.StudyDate, new { @class = "form-control", @Value = Model.StudyDate.HasValue ? Model.StudyDate.Value.ToString("d") : "" })
         <span class="input-group-btn">
             <button class="btn default" type="button">
                 <i class="fa fa-calendar"></i>

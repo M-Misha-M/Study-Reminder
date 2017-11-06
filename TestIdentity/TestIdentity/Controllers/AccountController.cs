@@ -204,9 +204,9 @@ namespace TestIdentity.Controllers
                      protocol: Request.Url.Scheme);
 
 
-                    await UserManager.SendEmailAsync(user.Id, "Confirmation Email",
-                      "To finish registration please click:: <a href=\""
-                                                      + callbackUrl + "\">Finish Registration</a>");
+                    await UserManager.SendEmailAsync(user.Id, "Confirmation email",
+                       "To finish registration please follow the link:: "+
+                       "<a href=" + callbackUrl + ">"+ "Finish registration</a>");
                     await UserManager.AddToRoleAsync(user.Id, "user");
                     return View("DisplayEmail");
 

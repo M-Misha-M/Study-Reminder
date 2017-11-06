@@ -63,12 +63,12 @@ namespace TestIdentity
 
             app.UseFacebookAuthentication(new FacebookAuthenticationOptions()
             {
-               
+
                 AppId = ConfigurationManager.AppSettings.Get("FacebookAppId"),
                 AppSecret = ConfigurationManager.AppSettings.Get("FacebookAppSecret"),
                 BackchannelHttpHandler = new HttpClientHandler(),
                 UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name,birthday",
-                Scope = { "email" , "user_birthday" },
+                Scope = { "email", "user_birthday" },
                 Provider = new FacebookAuthenticationProvider()
                 {
                     OnAuthenticated = async context =>

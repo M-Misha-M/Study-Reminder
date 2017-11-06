@@ -19,6 +19,7 @@ namespace TestIdentity
             var msg = new MailMessage();
             msg.To.Add(message.Destination);
             msg.Subject = message.Subject;
+            msg.IsBodyHtml = true;
             msg.Body = message.Body;
             return client.SendMailAsync(msg);
         }
