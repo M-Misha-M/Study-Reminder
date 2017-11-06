@@ -1,0 +1,20 @@
+﻿.sortable {
+    cursor: pointer;
+}
+
+.arrow-up {
+    background-image: url("../images/sort_asc.png");
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+
+.arrow-down {
+    background-image: url("../images/sort_desc.png");
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+
+.arrow-all {
+    background:url(../images/sort_both.png) center right no-repeat;
+    
+}
