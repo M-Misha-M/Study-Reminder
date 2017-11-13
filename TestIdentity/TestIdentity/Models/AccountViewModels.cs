@@ -87,9 +87,11 @@ namespace TestIdentity.Models
         public string LastName { get; set; }
 
         [Required]
-        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? BirthDate { get; set; }      
-        public DateTime? RegistrationDate { get; set; }       
+        public DateTime? RegistrationDate { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? StudynDate { get; set; }
     }
 

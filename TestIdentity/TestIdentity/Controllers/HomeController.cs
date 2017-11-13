@@ -7,7 +7,7 @@ using TestIdentity.Models;
 
 namespace TestIdentity.Controllers
 {
-    [RequireHttps]
+    
     public class HomeController : Controller
     {
         [Authorize(Roles = "admin")]
@@ -50,6 +50,7 @@ namespace TestIdentity.Controllers
                                            "Don't forget to check email";
                     return RedirectToAction("PersonalCabinet");
                 }
+                
             }
             return View(model);
         }

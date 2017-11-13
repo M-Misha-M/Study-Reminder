@@ -20,6 +20,7 @@ namespace TestIdentity
             msg.To.Add(message.Destination);
             msg.Subject = message.Subject;
             msg.IsBodyHtml = true;
+            client.EnableSsl = true;
             msg.Body = message.Body;
             return client.SendMailAsync(msg);
         }

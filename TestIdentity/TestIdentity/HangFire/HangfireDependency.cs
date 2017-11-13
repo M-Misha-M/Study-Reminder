@@ -19,7 +19,12 @@ namespace TestIdentity.HangFire
             initializer.InitializeJobs();
             JobStorage.Current = storage;
             app.UseHangfireServer(new BackgroundJobServerOptions(), storage);
-            app.UseHangfireDashboard("/Hangfire", new DashboardOptions(), storage);
+            var options = new DashboardOptions
+            {
+                Authorization = new[] { new MyAuthorizationFilter() }
+            };
+            app.UseHangfireDashboard("/hangfire", options, storage);
+            
         }
     }
 }
