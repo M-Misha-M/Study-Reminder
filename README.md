@@ -1,0 +1,2 @@
+The apllication allows users get email notifications about start study in certain period . At first users registers in website and should confirm registration email, then they can login to personal cabinet where they can choose their study date. Users get email notifications a month before study, a week before study and 1 day before study. Also website provides admin panel where administator can see details information about every registered user  
+Web site: http://mmichaelm1996-001-site1.itempurl.com/
